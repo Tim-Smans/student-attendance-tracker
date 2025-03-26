@@ -1,7 +1,7 @@
 from picamera2 import Picamera2
 import cv2
 from pyzbar.pyzbar import decode
-from decoder import decode_qr
+from .decoder import decode_qr
 
 # Initiasing the camera, configuring size, format and alignment.
 picam2 = Picamera2()

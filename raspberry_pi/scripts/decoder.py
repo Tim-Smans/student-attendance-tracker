@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 import json
 import time
+import json
+import time
 from .api import add_attendance
 
 previous_data = None 
