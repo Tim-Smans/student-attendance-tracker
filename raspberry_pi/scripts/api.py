@@ -25,7 +25,7 @@ def add_attendance(student_id: str, room):
   }
 
   response = requests.post(
-    "https://api.example.com/attendance",
+    f"{BASE_URL}/attendance",
     json=payload, 
     headers=headers
   )
@@ -38,7 +38,7 @@ def add_student(student_id: str, institution_id: str):
   }
 
   response = requests.post(
-    "https://api.example.com/student",
+    f"{BASE_URL}/student",
     json=payload, 
     headers=headers
   )
