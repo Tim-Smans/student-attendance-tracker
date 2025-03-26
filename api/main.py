@@ -13,8 +13,3 @@ app = FastAPI(
 
 app.include_router(student_routes.router, prefix="/student", tags=["Students"])
 app.include_router(attendance_routes.router, prefix="/attendance", tags=["Attendance"])
-
-
-engine = create_engine(DATABASE_URL)
-
-Base.metadata.create_all(engine)
