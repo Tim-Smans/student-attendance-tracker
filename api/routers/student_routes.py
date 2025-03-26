@@ -1,5 +1,5 @@
 import http
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from schemas.student import StudentSchema
 from services.student_service import create_student, get_all_students_with_attendance, get_student_with_attendance, update_student, delete_student
 from services.auth_service import verify_api_key
@@ -17,7 +17,7 @@ async def get_students():
         return students
     except Exception as e:
         print(e)
-        return {"error": str(e)}
+        raise HTTPException(status_code=404, detail=f"{str(e)}")
     
 @router.get("/{id}", dependencies=[Depends(verify_api_key)])
 async def get_student_by_id(id: str):
@@ -26,8 +26,7 @@ async def get_student_by_id(id: str):
 
         return student
     except Exception as e:
-        print(e)
-        return {"error": str(e)}
+        raise HTTPException(status_code=404, detail=f"{str(e)}")
     
 
 @router.delete("/{id}", dependencies=[Depends(verify_api_key)])
@@ -38,7 +37,7 @@ async def delete_student_by_id(id: str):
         return http.HTTPStatus.OK
     except Exception as e:
         print(e)
-        return {"error": str(e)}
+        raise HTTPException(status_code=400, detail=f"{str(e)}")
     
   
 @router.post("/", dependencies=[Depends(verify_api_key)])
@@ -48,7 +47,7 @@ async def post_student(student: StudentSchema):
         return student
     except Exception as e:
         print(e)
-        return {"error": str(e)}
+        raise HTTPException(status_code=404, detail=f"{str(e)}")
     
 @router.put("/", dependencies=[Depends(verify_api_key)])
 async def put_student(student_id: str, student: StudentSchema):
@@ -60,4 +59,4 @@ async def put_student(student_id: str, student: StudentSchema):
         return student
     except Exception as e:
         print(e)
-        return {"error": str(e)}    
+        raise HTTPException(status_code=404, detail=f"{str(e)}")

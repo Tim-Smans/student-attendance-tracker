@@ -16,7 +16,7 @@ async def post_attendance(attendance: AttendanceSchema):
         return attendance
     except Exception as e:
         print(e)
-        return {"error": str(e)}
+        raise HTTPException(status_code=404, detail=f"{str(e)}")
     
 
 @router.delete("/{id}", dependencies=[Depends(verify_api_key)])
@@ -27,7 +27,7 @@ async def delete_attendance_by_id(id: int):
         return http.HTTPStatus.OK
     except Exception as e:
         print(e)
-        return {"error": str(e)}
+        raise HTTPException(status_code=404, detail=f"{str(e)}")
     
 @router.get("/", dependencies=[Depends(verify_api_key)])
 async def get_attendances_all():
@@ -36,7 +36,7 @@ async def get_attendances_all():
         return attendances
     except Exception as e:
         print(e)
-        return {"error": str(e)}
+        raise HTTPException(status_code=404, detail=f"{str(e)}")
     
 @router.get("/{id}", dependencies=[Depends(verify_api_key)])
 async def get_attendances_by_id(id: int):
@@ -45,7 +45,7 @@ async def get_attendances_by_id(id: int):
         return attendance
     except Exception as e:
         print(e)
-        return {"error": str(e)}
+        raise HTTPException(status_code=404, detail=f"{str(e)}")
 
 @router.get("/date/{yyy-mm-dd}", dependencies=[Depends(verify_api_key)])
 async def get_attendances_by_date_route(date: str):    
@@ -59,5 +59,5 @@ async def get_attendances_by_date_route(date: str):
         raise HTTPException(status_code=400, detail="Invalid date, use 'YYYY-MM-DD'")
     except Exception as e:
         print(e)
-        return {"error": str(e)}
+        raise HTTPException(status_code=404, detail=f"{str(e)}")
     
