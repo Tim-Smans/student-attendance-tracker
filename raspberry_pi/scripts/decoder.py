@@ -6,11 +6,13 @@ import json
 import time
 from .api import add_attendance
 
-previous_data = None 
-last_scan_time = 0
-cooldown = 30
+
 
 def decode_qr(qr_codes, frame):
+  previous_data = None 
+  last_scan_time = 0
+  cooldown = 30
+
   for qr in qr_codes:
         qr_data = qr.data.decode('utf-8')
         current_time = time.time()
