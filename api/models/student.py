@@ -7,4 +7,4 @@ class Student(Base):
 
     student_id = Column(String, primary_key=True)
     institution_id = Column(String, nullable=False)    
-    attendances = relationship("Attendance", back_populates="student")
+    attendances = relationship("Attendance", back_populates="student", cascade="all, delete")
