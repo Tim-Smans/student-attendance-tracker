@@ -1,6 +1,11 @@
 import requests
 from .config import API_KEY, BASE_URL
 
+headers = {
+    "Content-Type": "application/json",
+    "x-api-key": API_KEY
+}
+
 
 def add_attendance(student_id: str, room):
   
