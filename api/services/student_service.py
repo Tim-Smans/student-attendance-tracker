@@ -10,9 +10,12 @@ def create_student(student_id: str, institution_id: str):
     institution_id=institution_id
     )   
 
-    # Add the record to the session and commit it.
-    session.add(new_record)
-    session.commit()
+    try:
+        session.add(new_record)
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        raise e
 
 def update_student(student_id: str, newStudent: Student):
     og_student = session.query(Student).filter_by(student_id=student_id).first()
@@ -27,7 +30,11 @@ def update_student(student_id: str, newStudent: Student):
             if hasattr(og_student, key):
                 setattr(og_student, key, value)
                 
+    try:
         session.commit()
+    except Exception as e:
+        session.rollback()
+        raise e    
     else:
         raise NotFoundError("Student does not exist", 404)        
 
@@ -36,7 +43,11 @@ def delete_student(student_id: str):
 
     if(student):
         session.delete(student)
-        session.commit()
+        try:
+            session.commit()
+        except Exception as e:
+            session.rollback()
+            raise e
     else:
         raise NotFoundError("Student does not exist", 404)
         

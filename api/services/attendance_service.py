@@ -16,7 +16,12 @@ def create_attendance(student_id: str, room: str):
     )   
 
     session.add(new_record)
-    session.commit()
+
+    try:
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        raise e
 
 def get_all_attendances():
     attendances = session.query(Attendance)
@@ -40,4 +45,9 @@ def delete_attendance(id: int):
     attendance = get_attendance_by_id(id)
         
     session.delete(attendance)
-    session.commit()
+    try:
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        raise e
+    
