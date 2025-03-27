@@ -10,8 +10,14 @@ def init_camera():
 
     picam2.set_controls({
         "ExposureTime": 8000,
-        "AnalogueGain": 8.0,
+        "AnalogueGain": 3.0,
         "FrameDurationLimits": (10000, 10000),
+        "Sharpness": 2,
+        "AwbMode": "auto",
+        "AwbGains": (1.0, 1.0),
+        "AwbK": (1.0, 1.0, 1.0),
+        "AwbR": (1.0, 1.0, 1.0),
+        "AwbB": (1.0, 1.0, 1.0)
     })
 
     return picam2
