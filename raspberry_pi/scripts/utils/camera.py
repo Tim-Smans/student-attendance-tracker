@@ -12,7 +12,6 @@ def init_camera():
         "ExposureTime": 8000,
         "AnalogueGain": 3.0,
         "FrameDurationLimits": (10000, 10000),
-        "Sharpness": 2.0,
     })
 
     return picam2
