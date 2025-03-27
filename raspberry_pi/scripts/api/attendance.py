@@ -1,5 +1,5 @@
-from .client import post
-from .student import check_student_exist, add_student
+from client import post
+from student import check_student_exist, add_student
 
 def add_attendance(student_id, room):
     if not check_student_exist(student_id):

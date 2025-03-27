@@ -1,9 +1,9 @@
 from picamera2 import Picamera2
 import cv2
 from pyzbar.pyzbar import decode
-from .utils.image_utils import is_blurry
-from .utils.camera import init_camera
-from .utils.decoder import decode_qr
+from utils.image_utils import is_blurry
+from utils.camera import init_camera
+from utils.decoder import decode_qr
 
 # Initiasing the camera, configuring size, format and alignment.
 picam2 = init_camera()

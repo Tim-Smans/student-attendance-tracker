@@ -1,4 +1,4 @@
-from .client import post, get
+from client import post, get
 
 def check_student_exist(student_id):
     response = get(f"student/{student_id}")
