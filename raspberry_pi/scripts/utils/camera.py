@@ -14,10 +14,6 @@ def init_camera():
         "FrameDurationLimits": (10000, 10000),
         "Sharpness": 2,
         "AwbMode": "auto",
-        "AwbGains": (1.0, 1.0),
-        "AwbK": (1.0, 1.0, 1.0),
-        "AwbR": (1.0, 1.0, 1.0),
-        "AwbB": (1.0, 1.0, 1.0)
     })
 
     return picam2
