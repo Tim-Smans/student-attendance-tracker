@@ -8,10 +8,7 @@ from .api import add_attendance
 
 
 
-def decode_qr(qr_codes, frame):
-  previous_data = None 
-  last_scan_time = 0
-  cooldown = 30
+def decode_qr(qr_codes, frame, previous_data=None, last_scan_time=0, cooldown=30):
 
   for qr in qr_codes:
         qr_data = qr.data.decode('utf-8')
