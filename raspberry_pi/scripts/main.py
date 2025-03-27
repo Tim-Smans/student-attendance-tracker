@@ -1,28 +1,12 @@
 from picamera2 import Picamera2
 import cv2
 from pyzbar.pyzbar import decode
-from .decoder import decode_qr
+from .utils.image_utils import is_blurry
+from .utils.camera import init_camera
+from .utils.decoder import decode_qr
 
 # Initiasing the camera, configuring size, format and alignment.
-picam2 = Picamera2()
-picam2.preview_configuration.main.size = (640, 480)
-picam2.preview_configuration.main.format = "RGB888"
-picam2.preview_configuration.align()
-picam2.configure("preview")
-picam2.start()
-
-picam2.set_controls({
-    "ExposureTime": 8000,  # in microseconds (8ms)
-    "AnalogueGain": 2.0,   # keep low to keep noise down
-    "FrameDurationLimits": (10000, 10000),  # max ~100fps
-    "Contrast": 1.5,
-    "Sharpness": 2,
-})
-
-# Functie om te checken of een afbeelding te wazig is
-def is_blurry(img, threshold=100.0):
-    laplacian_var = cv2.Laplacian(img, cv2.CV_64F).var()
-    return laplacian_var < threshold
+picam2 = init_camera()
 
 print("Scanning QR codes... Press 'q' to quit.")
 
@@ -46,8 +30,8 @@ while True:
     
     # QR decoding
     qr_codes = decode(frame)
-
     previous_data, last_scan_time = decode_qr(qr_codes, frame, previous_data, last_scan_time)    
+    
     # Show frame to the user
     cv2.imshow("QR Scanner", frame)
     
