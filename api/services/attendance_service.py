@@ -15,17 +15,19 @@ def create_attendance(student_id: str, room: str):
     room=room
     )   
 
-    # Add the record to the session and commit it.
     session.add(new_record)
     session.commit()
 
 def get_all_attendances():
-
     attendances = session.query(Attendance)
     return attendances.all()
 
 def get_attendance_by_id(id: int):
     attendance = session.query(Attendance).filter_by(id=id).first()
+
+    if not attendance:
+        raise NotFoundError("Attendance does not exist", 404)
+
     return attendance
 
 def get_attendances_by_date(date: datetime):
@@ -35,10 +37,7 @@ def get_attendances_by_date(date: datetime):
     return attendances
 
 def delete_attendance(id: int):
-    attendance = session.query(Attendance).filter_by(id=id).first()
-
-    if(attendance):
-        session.delete(attendance)
-        session.commit()
-    else:
-        raise NotFoundError("Attendance does not exist", 404)
+    attendance = get_attendance_by_id(id)
+        
+    session.delete(attendance)
+    session.commit()

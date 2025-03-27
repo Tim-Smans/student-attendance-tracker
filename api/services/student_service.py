@@ -17,7 +17,7 @@ def create_student(student_id: str, institution_id: str):
 def update_student(student_id: str, newStudent: Student):
     og_student = session.query(Student).filter_by(student_id=student_id).first()
     
-    if(student_id != newStudent.student_id):
+    if student_id != newStudent.student_id:
         raise NoIdMatchError("Student id's do not match", 400)
     
     if og_student:
@@ -39,8 +39,8 @@ def delete_student(student_id: str):
         session.commit()
     else:
         raise NotFoundError("Student does not exist", 404)
+        
 def get_all_students():
-
     students = session.query(Student)
     return students.all()
 
@@ -50,4 +50,8 @@ def get_all_students_with_attendance():
 
 def get_student_with_attendance(student_id: str):
     student = session.query(Student).filter_by(student_id=student_id).first()
+    
+    if not student:
+        raise NotFoundError("Student does not exist", 404)
+    
     return { student.student_id: student.attendances}
