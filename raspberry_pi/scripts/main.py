@@ -26,6 +26,10 @@ def is_blurry(img, threshold=100.0):
 
 print("Scanning QR codes... Press 'q' to quit.")
 
+previous_data = None
+last_scan_time = 0
+
+
 # Main loop, will keep running until it receives the 'q' key
 while True:
     # Creates a snapshot of the camera
@@ -43,8 +47,7 @@ while True:
     # QR decoding
     qr_codes = decode(frame)
 
-    decode_qr(qr_codes, frame)
-    
+    previous_data, last_scan_time = decode_qr(qr_codes, frame, previous_data, last_scan_time)    
     # Show frame to the user
     cv2.imshow("QR Scanner", frame)
     

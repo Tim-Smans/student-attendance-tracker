@@ -8,7 +8,7 @@ from .api import add_attendance
 
 
 
-def decode_qr(qr_codes, frame, previous_data=None, last_scan_time=0, cooldown=30):
+def decode_qr(qr_codes, frame, previous_data, last_scan_time=0, cooldown=30):
 
   for qr in qr_codes:
         qr_data = qr.data.decode('utf-8')
@@ -42,3 +42,5 @@ def decode_qr(qr_codes, frame, previous_data=None, last_scan_time=0, cooldown=30
         pts = qr.polygon
         pts = [(point.x, point.y) for point in pts]
         cv2.polylines(frame, [np.array(pts)], True, (0, 255, 0), 2)
+
+  return previous_data, last_scan_time
