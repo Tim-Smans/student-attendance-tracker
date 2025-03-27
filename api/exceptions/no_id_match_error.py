@@ -3,14 +3,7 @@ class NoIdMatchError(Exception):
 
     def __init__(self, message, error_code):
         super().__init__(message)
-        self.error_code = error_code
-
-class NoIdMatchError(Exception):
-    """Exception raised for when 2 ids do not match"""
-
-    def __init__(self, message, error_code):
-        super().__init__(message)
-        self.message = message  # <- DIT MOET ERBIJ
+        self.message = message 
         self.error_code = error_code
 
     def __str__(self):
