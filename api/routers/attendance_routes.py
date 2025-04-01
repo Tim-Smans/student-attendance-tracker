@@ -1,5 +1,5 @@
 from datetime import datetime
-from fastapi import Depends, HTTPException, Path
+from fastapi import Depends, HTTPException, Path, Query
 from fastapi.responses import JSONResponse
 from sqlalchemy import Date
 from exceptions.not_found_error import NotFoundError
@@ -36,9 +36,13 @@ async def delete_attendance_by_id(id: int):
         raise HTTPException(status_code=500, detail=f"{str(e)}")
     
 @router.get("/", dependencies=[Depends(verify_api_key)])
-async def get_attendances_all():
+async def get_attendances_all(    
+    page: int = Query(1, ge=1),
+    limit: int = Query(10, ge=1, le=100)
+    ):
+    
     try:
-        attendances = get_all_attendances()
+        attendances = get_all_attendances(page, limit)
         return attendances
     except Exception as e:
         logger.error(f"Unexpected error in get_attendances_all: {e}")   
@@ -54,12 +58,16 @@ async def get_attendances_by_id(id: int):
         raise HTTPException(status_code=500, detail=f"{str(e)}")
 
 @router.get("/date/{yyy-mm-dd}", dependencies=[Depends(verify_api_key)])
-async def get_attendances_by_date_route(date: str):    
+async def get_attendances_by_date_route(
+    date: str,
+    page: int = Query(1, ge=1),
+    limit: int = Query(10, ge=1, le=100)
+):    
     
     try:
         parsed_date = datetime.strptime(date, "%Y-%m-%d").date()
 
-        attendances = get_attendances_by_date(parsed_date)
+        attendances = get_attendances_by_date(parsed_date, page, limit)
         return attendances
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid date, use 'YYYY-MM-DD'")

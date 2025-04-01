@@ -1,4 +1,7 @@
-from models.student import Student
+from models.pydantic.attendance import AttendanceOut
+from models.pydantic.student import StudentWithAttendanceOut
+from models.pydantic.paginated_response import PaginatedResponse
+from models.sql_alchemy.student import Student
 from services.session_service import session
 from exceptions.not_found_error import NotFoundError
 from exceptions.no_id_match_error import NoIdMatchError
@@ -55,9 +58,32 @@ def get_all_students():
     students = session.query(Student)
     return students.all()
 
-def get_all_students_with_attendance():
-    students = session.query(Student)
-    return { student.student_id: student.attendances for student in students }
+def get_all_students_with_attendance(page: int, limit: int):
+    offset = (page - 1) * limit
+    total = session.query(Student).count()
+    students = session.query(Student).offset(offset).limit(limit).all()
+
+    pydantic_students = [
+        StudentWithAttendanceOut(
+            student_id=s.student_id,
+            attendances=[
+                AttendanceOut(
+                    id=a.id,
+                    student_id=a.student_id,
+                    timestamp=a.timestamp,
+                    room=a.room
+                )
+                for a in s.attendances
+            ]
+        )
+        for s in students
+    ]
+    return PaginatedResponse(
+        total=total,
+        page=page,
+        limit=limit,
+        items=pydantic_students
+    )
 
 def get_student_with_attendance(student_id: str):
     student = session.query(Student).filter_by(student_id=student_id).first()

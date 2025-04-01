@@ -1,21 +1,24 @@
 import http
-from fastapi import Depends, HTTPException, Response
+from fastapi import Depends, HTTPException, Query, Response
 from fastapi.responses import JSONResponse
 from schemas.student import StudentSchema
 from services.student_service import create_student, get_all_students_with_attendance, get_student_with_attendance, update_student, delete_student
 from services.auth_service import verify_api_key
 from fastapi import APIRouter
 from exceptions.not_found_error import NotFoundError
-from models.student import Student
+from models.sql_alchemy.student import Student
 import logging
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
 @router.get("/", dependencies=[Depends(verify_api_key)])
-async def get_students():
+async def get_students(
+    page: int = Query(1, ge=1),
+    limit: int = Query(10, ge=1, le=100)
+):
     try:
-        students = get_all_students_with_attendance()
+        students = get_all_students_with_attendance(page, limit)
 
         return students
     

@@ -1,13 +1,12 @@
-from fastapi import Depends, FastAPI
-from sqlalchemy import create_engine
+from fastapi import FastAPI
 from config import DATABASE_URL
-from models.base import Base
+from models.sql_alchemy.base import Base
 from routers import student_routes, attendance_routes
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
   title="Student Attendance Tracker API", 
-  version="B-0.1",
+  version="B-0.2",
 )
 
 
