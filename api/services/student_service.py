@@ -1,3 +1,4 @@
+from schemas.student import StudentSchema
 from models.pydantic.attendance import AttendanceOut
 from models.pydantic.student import StudentWithAttendanceOut
 from models.pydantic.paginated_response import PaginatedResponse
@@ -7,10 +8,13 @@ from exceptions.not_found_error import NotFoundError
 from exceptions.no_id_match_error import NoIdMatchError
 
 
-def create_student(student_id: str, institution_id: str):
+def create_student(student: StudentSchema):
     new_record = Student(
-    student_id=student_id,
-    institution_id=institution_id
+    student_id=student.student_id,
+    lastname=student.lastname,
+    firstname=student.firstname,
+    email=student.email,
+    degree_programme=student.degree_programme,
     )   
 
     try:
@@ -66,6 +70,10 @@ def get_all_students_with_attendance(page: int, limit: int):
     pydantic_students = [
         StudentWithAttendanceOut(
             student_id=s.student_id,
+            lastname=s.lastname,
+            firstname=s.firstname,
+            email=s.email,
+            degree_programme=s.degree_programme,
             attendances=[
                 AttendanceOut(
                     id=a.id,
@@ -91,4 +99,6 @@ def get_student_with_attendance(student_id: str):
     if not student:
         raise NotFoundError("Student does not exist", 404)
     
-    return { student.student_id: student.attendances}
+
+
+    return { student }

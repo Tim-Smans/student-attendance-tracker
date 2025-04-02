@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { createClassgroup } from '@/helpers/classgroupHelpers'
 import { readExcelFile } from '@/helpers/excelHelpers'
 import type { ClassGroup } from '@/models/classGroup'
 import { ref } from 'vue'
@@ -16,7 +17,14 @@ async function scanExcelFile() {
 
   const file = files.value[0]
   classGroup.value = await readExcelFile(file)
-  console.log('Gelezen klasgroep:', classGroup.value)
+
+  const classGroupInput: ClassGroup = { ...classGroup.value }
+  const result = await createClassgroup(classGroupInput)
+
+  if (result) {
+    console.log('Success!')
+  }
+  console.log('Fail!')
 }
 </script>
 

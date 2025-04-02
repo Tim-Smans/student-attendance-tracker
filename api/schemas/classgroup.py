@@ -1,10 +1,15 @@
 from pydantic import BaseModel
 
-from api.schemas.student import StudentSchema
-
 class ClassGroupSchema(BaseModel):
     name: str
-    students: list[StudentSchema]
+    student_ids: list[str]
+
+    class Config: 
+        from_attributes = True
+
+class AddStudentToClassGroupSchema(BaseModel):
+    classgroup_id: str
+    student_id: str
 
     class Config: 
         from_attributes = True

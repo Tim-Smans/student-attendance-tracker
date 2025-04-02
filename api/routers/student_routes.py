@@ -58,7 +58,7 @@ async def delete_student_by_id(id: str):
 @router.post("/", dependencies=[Depends(verify_api_key)], status_code=201)
 async def post_student(student: StudentSchema):
     try:
-        create_student(student.student_id, student.institution_id)
+        create_student(student)
         return student
     except Exception as e:
         logger.error(f"Unexpected error in post_student: {e}")   
