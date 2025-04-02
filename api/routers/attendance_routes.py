@@ -15,7 +15,7 @@ router = APIRouter()
 @router.post("/", dependencies=[Depends(verify_api_key)], status_code=201)
 async def post_attendance(attendance: AttendanceSchema):
     try:
-        create_attendance(attendance.student_id, attendance.room)
+        create_attendance(attendance.student_id, attendance.class_session_id)
         return attendance
     except Exception as e:
         logger.error(f"Unexpected error in post_attendance: {e}")   

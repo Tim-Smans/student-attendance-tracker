@@ -10,11 +10,11 @@ from models.sql_alchemy.student import Student
 from models.sql_alchemy.attendance import Attendance
 
 
-def create_attendance(student_id: str, room: str):
+def create_attendance(student_id: str, class_session_id: str):
     new_record = Attendance(
     student_id=student_id,
     timestamp=datetime.now(),
-    room=room
+    class_session_id=class_session_id
     )   
 
     session.add(new_record)
@@ -35,7 +35,7 @@ def get_all_attendances(page: int, limit: int):
             id=a.id,
             student_id=a.student_id,
             timestamp=a.timestamp,
-            room=a.room
+            class_session_id=a.class_session_id
         )    
         for a in attendances
     ]
@@ -66,7 +66,7 @@ def get_attendances_by_date(date: datetime, page: int, limit: int):
             id=a.id,
             student_id=a.student_id,
             timestamp=a.timestamp,
-            room=a.room
+            class_session_id=a.class_session_id
         )    
         for a in attendances
     ]

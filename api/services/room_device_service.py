@@ -1,0 +1,77 @@
+from uuid import UUID
+from models.pydantic.room_device import RoomDeviceOut
+from models.sql_alchemy.room_device import RoomDevice
+from schemas.room_device import RoomDeviceSchema
+from models.pydantic.paginated_response import PaginatedResponse
+from services.session_service import session
+from exceptions.not_found_error import NotFoundError
+from exceptions.no_id_match_error import NoIdMatchError
+
+
+def create_device(room_device: RoomDeviceSchema):
+    new_record = RoomDevice(
+      room_name=room_device.room_name,
+      device_identifier=room_device.device_identifier
+    )   
+
+    try:
+        session.add(new_record)
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        raise e
+
+def update_device(id: str, new_room_device: RoomDevice):
+    og_room_device = session.query(RoomDevice).filter_by(id=id).first()
+  
+    if UUID(id) != og_room_device.id:
+        raise NoIdMatchError("Room Device id's do not match", 400)
+    
+    if not og_room_device:
+        raise NotFoundError("Room device does not exist", 404)        
+
+    for key, value in vars(new_room_device).items():
+        if key.startswith('_'):
+            continue  # Skip SQLAlchemy internals
+        if hasattr(og_room_device, key):
+            setattr(og_room_device, key, value)
+            
+    try:
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        raise e    
+
+def delete_device(id: str):
+    room_device = session.query(RoomDevice).filter_by(id=id).first()
+
+    if(room_device):
+        session.delete(room_device)
+        try:
+            session.commit()
+        except Exception as e:
+            session.rollback()
+            raise e
+    else:
+        raise NotFoundError("Room device does not exist", 404)
+        
+def get_all_devices(page: int, limit: int):
+    offset = (page - 1) * limit
+    total = session.query(RoomDevice).offset(offset).limit(limit).count()
+    
+    room_devices = session.query(RoomDevice).offset(offset).limit(limit).all()
+
+    return PaginatedResponse(
+        total=total,
+        page=page,
+        limit=limit,
+        items=[RoomDeviceOut.model_validate(rd) for rd in room_devices]  # convert to Pydantic  
+        )
+
+def get_class_sessions_from_device(device_id: str):
+    room_device = session.query(RoomDevice).filter_by(id=device_id).first()
+
+    if(room_device):
+        return {"class_sessions": room_device.class_sessions}
+    else:
+        raise NotFoundError("Room device does not exist", 404)
