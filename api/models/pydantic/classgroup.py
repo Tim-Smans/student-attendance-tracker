@@ -1,11 +1,12 @@
+from uuid import UUID
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from typing import List
 from models.pydantic.student import StudentOut
 
 
-class Classgroup(BaseModel):
-    id: str
+class ClassgroupOut(BaseModel):
+    id: UUID
     name: str
 
     model_config = ConfigDict(from_attributes=True)

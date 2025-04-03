@@ -62,6 +62,7 @@ def get_all_students():
     students = session.query(Student)
     return students.all()
 
+
 def get_all_students_with_attendance(page: int, limit: int):
     offset = (page - 1) * limit
     total = session.query(Student).count()

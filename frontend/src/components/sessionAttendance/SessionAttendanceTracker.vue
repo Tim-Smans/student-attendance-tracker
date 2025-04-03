@@ -1,0 +1,590 @@
+<template>
+  <div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+          <h1 class="text-2xl font-bold text-gray-900">Session Attendance {{ this.sessionId }}</h1>
+          <div class="mt-3 sm:mt-0">
+            <button
+              @click="goBack"
+              class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="-ml-1 mr-2 h-5 w-5 text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                />
+              </svg>
+              Back to Schedule
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div v-if="isLoading" class="flex justify-center py-12">
+        <svg
+          class="animate-spin -ml-1 mr-3 h-8 w-8 text-green-500"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+      </div>
+
+      <div
+        v-else-if="!session"
+        class="text-center py-12 bg-white shadow overflow-hidden sm:rounded-lg"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="mx-auto h-12 w-12 text-gray-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">Session not found</h3>
+        <p class="mt-1 text-sm text-gray-500">The requested session could not be found.</p>
+      </div>
+
+      <div v-else>
+        <!-- Session Info Header -->
+        <SessionInfoHeader :session="session" :classgroup="classgroup" :classroom="classroom" />
+
+        <!-- Attendance Summary -->
+        <AttendanceSummary :attendanceStats="attendanceStats" class="mt-6" />
+
+        <!-- Attendance Controls -->
+        <div class="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">
+          <div class="px-4 py-5 sm:p-6">
+            <div
+              class="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0"
+            >
+              <!-- Search -->
+              <div class="relative rounded-md shadow-sm max-w-xs w-full">
+                <input
+                  type="text"
+                  v-model="searchQuery"
+                  class="block w-full pr-10 sm:text-sm border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                  placeholder="Search students..."
+                />
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Bulk Actions -->
+              <div class="flex items-center space-x-4">
+                <span class="text-sm text-gray-500">Bulk action:</span>
+                <div class="relative inline-block text-left">
+                  <select
+                    v-model="bulkAction"
+                    class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md"
+                  >
+                    <option value="" disabled>Select action</option>
+                    <option value="present">Mark as Present</option>
+                    <option value="absent">Mark as Absent</option>
+                    <option value="late">Mark as Late</option>
+                    <option value="excused">Mark as Excused</option>
+                  </select>
+                </div>
+                <button
+                  @click="applyBulkAction"
+                  :disabled="!bulkAction || selectedStudents.length === 0"
+                  class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Apply to {{ selectedStudents.length || 'All' }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Attendance Table -->
+        <AttendanceTable
+          :students="filteredStudents"
+          :attendanceRecords="attendanceRecords"
+          :selectedStudents="selectedStudents"
+          @update-attendance="updateAttendance"
+          @update-note="updateNote"
+          @toggle-select="toggleSelectStudent"
+          @toggle-select-all="toggleSelectAll"
+          class="mt-6"
+        />
+
+        <!-- Save Button -->
+        <div class="mt-6 flex justify-end">
+          <button
+            @click="saveAttendance"
+            :disabled="!hasChanges || isSaving"
+            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg
+              v-if="isSaving"
+              class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <span>{{ isSaving ? 'Saving...' : 'Save Attendance' }}</span>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Notification -->
+    <div v-if="notification.show" class="fixed bottom-0 inset-x-0 pb-2 sm:pb-5">
+      <div class="max-w-md mx-auto px-2 sm:px-6 lg:px-8">
+        <div
+          class="p-2 rounded-lg shadow-lg sm:p-3"
+          :class="{
+            'bg-green-500': notification.type === 'success',
+            'bg-red-500': notification.type === 'error',
+            'bg-blue-500': notification.type === 'info',
+          }"
+        >
+          <div class="flex items-center justify-between flex-wrap">
+            <div class="w-0 flex-1 flex items-center">
+              <span
+                class="flex p-2 rounded-lg"
+                :class="{
+                  'bg-green-600': notification.type === 'success',
+                  'bg-red-600': notification.type === 'error',
+                  'bg-blue-600': notification.type === 'info',
+                }"
+              >
+                <!-- Success Icon -->
+                <svg
+                  v-if="notification.type === 'success'"
+                  class="h-6 w-6 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+
+                <!-- Error Icon -->
+                <svg
+                  v-if="notification.type === 'error'"
+                  class="h-6 w-6 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+
+                <!-- Info Icon -->
+                <svg
+                  v-if="notification.type === 'info'"
+                  class="h-6 w-6 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </span>
+              <p class="ml-3 font-medium text-white truncate">
+                {{ notification.message }}
+              </p>
+            </div>
+            <div class="order-2 flex-shrink-0 sm:order-3 sm:ml-2">
+              <button
+                type="button"
+                class="-mr-1 flex p-2 rounded-md hover:bg-opacity-20 hover:bg-black focus:outline-none"
+                @click="closeNotification"
+              >
+                <span class="sr-only">Close</span>
+                <svg
+                  class="h-6 w-6 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import SessionInfoHeader from './SessionInfoHeader.vue'
+import AttendanceSummary from './AttendanceSummary.vue'
+import AttendanceTable from './AttendanceTable.vue'
+
+export default {
+  components: {
+    SessionInfoHeader,
+    AttendanceSummary,
+    AttendanceTable,
+  },
+  props: {
+    sessionId: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      isLoading: true,
+      isSaving: false,
+      session: null,
+      classgroup: null,
+      classroom: null,
+      students: [],
+      attendanceRecords: [],
+      originalAttendanceRecords: [], // For tracking changes
+      searchQuery: '',
+      bulkAction: '',
+      selectedStudents: [],
+      notification: {
+        show: false,
+        type: 'success',
+        message: '',
+        timeout: null,
+      },
+    }
+  },
+  computed: {
+    filteredStudents() {
+      if (!this.searchQuery) {
+        return this.students
+      }
+
+      const query = this.searchQuery.toLowerCase()
+      return this.students.filter(
+        (student) =>
+          student.studentId.toLowerCase().includes(query) ||
+          student.firstName.toLowerCase().includes(query) ||
+          student.lastName.toLowerCase().includes(query) ||
+          student.email.toLowerCase().includes(query),
+      )
+    },
+    attendanceStats() {
+      const total = this.attendanceRecords.length
+      if (total === 0) return { present: 0, absent: 0, late: 0, excused: 0 }
+
+      const counts = this.attendanceRecords.reduce((acc, record) => {
+        acc[record.status] = (acc[record.status] || 0) + 1
+        return acc
+      }, {})
+
+      return {
+        present: {
+          count: counts.present || 0,
+          percentage: Math.round(((counts.present || 0) / total) * 100),
+        },
+        absent: {
+          count: counts.absent || 0,
+          percentage: Math.round(((counts.absent || 0) / total) * 100),
+        },
+        late: {
+          count: counts.late || 0,
+          percentage: Math.round(((counts.late || 0) / total) * 100),
+        },
+        excused: {
+          count: counts.excused || 0,
+          percentage: Math.round(((counts.excused || 0) / total) * 100),
+        },
+      }
+    },
+    hasChanges() {
+      if (!this.originalAttendanceRecords.length) return false
+
+      return (
+        JSON.stringify(this.attendanceRecords) !== JSON.stringify(this.originalAttendanceRecords)
+      )
+    },
+  },
+  created() {
+    this.fetchSessionData()
+  },
+  methods: {
+    fetchSessionData() {
+      // In a real app, this would be an API call
+      setTimeout(() => {
+        // Mock session data
+        this.session = {
+          id: 1,
+          start_time: '2025-04-03T09:00:00',
+          end_time: '2025-04-03T10:30:00',
+          classgroup_id: 1,
+          room_device_id: 1,
+        }
+
+        this.classgroup = {
+          id: 1,
+          name: 'Computer Science 101',
+        }
+
+        this.classroom = {
+          id: 1,
+          name: 'Room A101',
+          location: 'Building A, Floor 1',
+        }
+
+        // Mock student data
+        this.students = [
+          {
+            id: 1,
+            studentId: 'CS001',
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john.doe@university.edu',
+            degreeProgramme: 'Computer Science',
+          },
+          {
+            id: 2,
+            studentId: 'CS002',
+            firstName: 'Jane',
+            lastName: 'Smith',
+            email: 'jane.smith@university.edu',
+            degreeProgramme: 'Computer Science',
+          },
+          {
+            id: 3,
+            studentId: 'CS003',
+            firstName: 'Michael',
+            lastName: 'Johnson',
+            email: 'michael.johnson@university.edu',
+            degreeProgramme: 'Software Engineering',
+          },
+          {
+            id: 4,
+            studentId: 'CS004',
+            firstName: 'Emily',
+            lastName: 'Williams',
+            email: 'emily.williams@university.edu',
+            degreeProgramme: 'Computer Science',
+          },
+          {
+            id: 5,
+            studentId: 'CS005',
+            firstName: 'David',
+            lastName: 'Brown',
+            email: 'david.brown@university.edu',
+            degreeProgramme: 'Data Science',
+          },
+          {
+            id: 6,
+            studentId: 'CS006',
+            firstName: 'Sarah',
+            lastName: 'Miller',
+            email: 'sarah.miller@university.edu',
+            degreeProgramme: 'Computer Science',
+          },
+          {
+            id: 7,
+            studentId: 'CS007',
+            firstName: 'James',
+            lastName: 'Wilson',
+            email: 'james.wilson@university.edu',
+            degreeProgramme: 'Software Engineering',
+          },
+          {
+            id: 8,
+            studentId: 'CS008',
+            firstName: 'Lisa',
+            lastName: 'Taylor',
+            email: 'lisa.taylor@university.edu',
+            degreeProgramme: 'Computer Science',
+          },
+        ]
+
+        // Mock attendance records
+        this.attendanceRecords = this.students.map((student) => ({
+          id: student.id,
+          sessionId: this.session.id,
+          studentId: student.id,
+          status:
+            Math.random() > 0.7
+              ? 'absent'
+              : Math.random() > 0.5
+                ? 'present'
+                : Math.random() > 0.5
+                  ? 'late'
+                  : 'excused',
+          note: '',
+          timestamp: new Date().toISOString(),
+        }))
+
+        // Store original records for change tracking
+        this.originalAttendanceRecords = JSON.parse(JSON.stringify(this.attendanceRecords))
+
+        this.isLoading = false
+      }, 1000)
+    },
+    updateAttendance(studentId, status) {
+      const record = this.attendanceRecords.find((r) => r.studentId === studentId)
+      if (record) {
+        record.status = status
+        record.timestamp = new Date().toISOString()
+      }
+    },
+    updateNote(studentId, note) {
+      const record = this.attendanceRecords.find((r) => r.studentId === studentId)
+      if (record) {
+        record.note = note
+        record.timestamp = new Date().toISOString()
+      }
+    },
+    toggleSelectStudent(studentId) {
+      const index = this.selectedStudents.indexOf(studentId)
+      if (index === -1) {
+        this.selectedStudents.push(studentId)
+      } else {
+        this.selectedStudents.splice(index, 1)
+      }
+    },
+    toggleSelectAll(isSelected) {
+      if (isSelected) {
+        this.selectedStudents = this.filteredStudents.map((student) => student.id)
+      } else {
+        this.selectedStudents = []
+      }
+    },
+    applyBulkAction() {
+      if (!this.bulkAction) return
+
+      const studentsToUpdate =
+        this.selectedStudents.length > 0
+          ? this.selectedStudents
+          : this.filteredStudents.map((student) => student.id)
+
+      studentsToUpdate.forEach((studentId) => {
+        this.updateAttendance(studentId, this.bulkAction)
+      })
+
+      this.showNotification(
+        'success',
+        `${studentsToUpdate.length} students marked as ${this.bulkAction}`,
+      )
+      this.bulkAction = ''
+      this.selectedStudents = []
+    },
+    saveAttendance() {
+      this.isSaving = true
+
+      // In a real app, this would be an API call
+      setTimeout(() => {
+        // Update original records after save
+        this.originalAttendanceRecords = JSON.parse(JSON.stringify(this.attendanceRecords))
+        this.isSaving = false
+        this.showNotification('success', 'Attendance records saved successfully')
+      }, 1500)
+    },
+    goBack() {
+      // In a real app, this would navigate back to the schedule page
+      alert('Navigate back to schedule page')
+    },
+    showNotification(type, message) {
+      // Clear any existing timeout
+      if (this.notification.timeout) {
+        clearTimeout(this.notification.timeout)
+      }
+
+      // Set notification
+      this.notification.type = type
+      this.notification.message = message
+      this.notification.show = true
+
+      // Auto-hide after 5 seconds
+      this.notification.timeout = setTimeout(() => {
+        this.closeNotification()
+      }, 5000)
+    },
+    closeNotification() {
+      this.notification.show = false
+    },
+  },
+}
+</script>

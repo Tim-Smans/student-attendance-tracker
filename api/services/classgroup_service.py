@@ -1,4 +1,5 @@
 import uuid
+from models.pydantic.classgroup import ClassgroupOut
 from models.sql_alchemy.student import Student
 from exceptions.not_found_error import NotFoundError
 from schemas.student import StudentSchema
@@ -50,6 +51,27 @@ def get_students_from_classgroup(classgroup_id: str, page: int, limit: int):
         items=[StudentSchema.model_validate(s) for s in students]  # convert to Pydantic  
         )
 
+def get_classgroups(page: int, limit: int):
+    offset = (page - 1) * limit
+    total = session.query(ClassGroup).count()
+
+    classgroups = session.query(ClassGroup).offset(offset).limit(limit).all()
+
+    return PaginatedResponse(
+        total=total,
+        page=page,
+        limit=limit,
+        items=[ClassgroupOut.model_validate(cg) for cg in classgroups]  # convert to Pydantic  
+        )
+
+
+def get_classgroup(classgroup_id: str):
+    classgroup = session.query(ClassGroup).filter_by(id=classgroup_id).first()
+
+    if(classgroup):
+        return classgroup
+    else:
+        raise NotFoundError("Classgroup does not exist", 404)
 
 def delete_classgroup(classgroup_id: str):
     classgroup = session.query(ClassGroup).filter_by(id=classgroup_id).first()

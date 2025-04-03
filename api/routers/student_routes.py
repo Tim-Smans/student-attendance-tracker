@@ -12,6 +12,7 @@ import logging
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
+
 @router.get("/", dependencies=[Depends(verify_api_key)])
 async def get_students(
     page: int = Query(1, ge=1),
@@ -75,3 +76,5 @@ async def put_student(student_id: str, student: StudentSchema):
     except Exception as e:
         logger.error(f"Unexpected error in put_student: {e}")   
         raise HTTPException(status_code=500, detail=f"{str(e)}")
+
+

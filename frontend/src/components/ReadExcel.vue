@@ -24,7 +24,6 @@ async function scanExcelFile() {
   if (result) {
     console.log('Success!')
   }
-  console.log('Fail!')
 }
 </script>
 

@@ -38,6 +38,16 @@ export const createStudent = async (student: Student) => {
 
 };
 
+export const getTotalStudentCount = async () => {
+  try {
+    const { data } = await instance.get('/students/');
+    return data.total;
+  } catch (error) {
+    console.error("API error:", error);
+    throw error;
+  }
+}
+
 
 const checkIfStudentExists = async (student_id: string): Promise<boolean> => {
   try {

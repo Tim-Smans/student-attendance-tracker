@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import ReadExcel from './components/ReadExcel.vue'
+import Navbar from './components/Navbar.vue'
 </script>
 
 <template class="bg-red">
-  <h1 class="m-10">Hell owferld</h1>
-  <ReadExcel />
+  <Navbar />
+  <router-view />
 </template>
 
 <style scoped></style>
