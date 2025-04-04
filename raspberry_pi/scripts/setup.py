@@ -16,7 +16,7 @@ headers = {
     "x-api-key": f"{API_KEY}"
 }
 
-res = post("room_device", {"room_name": room_name, "device_identifier": device_identifier}, headers=headers)
+res = post("roomdevices", {"room_name": room_name, "device_identifier": device_identifier}, headers=headers)
 
 if res.status_code != 201:
   print(res.text)
