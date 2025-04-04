@@ -5,9 +5,6 @@ from models.sql_alchemy.base import Base
 from routers import student_routes, attendance_routes, classgroup_routes, room_device_routes, class_session_routes
 from fastapi.middleware.cors import CORSMiddleware
 
-engine = create_engine(DATABASE_URL)
-
-Base.metadata.create_all(engine)
 
 app = FastAPI(
   title="Student Attendance Tracker API", 
