@@ -27,8 +27,8 @@ DEVICE_IDENTIFIER=$(./yq '.device_identifier' $CONFIG_FILE)
 API_KEY=$(./yq '.api_key' $CONFIG_FILE)
 
 
-if [ "$DEVICE_IDENTIFIER" = "\"\"" ]; then
-    echo "DEVICE_IDENTIFIER was not set, generating from CPU Serial..."
+if [ -z "$DEVICE_IDENTIFIER" ]; then
+    echo "🎯 DEVICE_IDENTIFIER was not set, generating from CPU Serial..."
     DEVICE_IDENTIFIER=$(awk '/Serial/ {print $3}' /proc/cpuinfo)
 fi
 

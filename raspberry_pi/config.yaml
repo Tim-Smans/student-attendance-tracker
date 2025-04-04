@@ -1,4 +1,6 @@
-room_name: "EDIT ME!"
+# Do not use spaces in the values in this file
+
+room_name: "EDIT_ME!"
 # Leave this blank to use the CPU serial 
-device_identifier: ""
-api_key: "api key here"
+device_identifier: "EDIT_ME!"
+api_key: "api_key_here"
