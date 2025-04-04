@@ -1,5 +1,6 @@
 import sys
-from api.client import post
+import requests
+
 
 BASE_URL = "https://student-attendance-tracker-ungw.onrender.com/"
 
@@ -16,7 +17,11 @@ headers = {
     "x-api-key": f"{API_KEY}"
 }
 
-res = post("roomdevices", {"room_name": room_name, "device_identifier": device_identifier}, headers=headers)
+
+payload = {
+  "room_name": room_name, "device_identifier": device_identifier
+}
+res = requests.post(BASE_URL + "roomdevices", json=payload, headers=headers)
 
 if res.status_code != 201:
   print(res.text)

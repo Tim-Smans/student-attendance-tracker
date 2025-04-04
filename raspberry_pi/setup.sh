@@ -32,11 +32,6 @@ if [ "$DEVICE_IDENTIFIER" = "\"\"" ]; then
     DEVICE_IDENTIFIER=$(awk '/Serial/ {print $3}' /proc/cpuinfo)
 fi
 
-sudo apt u
-
-#Reading Config
-CONFIG_FILE="config.yaml"
-
 sudo apt update
 sudo apt install libzbar0
 
@@ -45,6 +40,6 @@ source .venv/bin/activate
 
 pip install -r requirements.txt
 
-python3 setup.py $ROOM_NAME $DEVICE_IDENTIFIER $API_KEY
+python3 scripts/setup.py $ROOM_NAME $DEVICE_IDENTIFIER $API_KEY
 
 echo "Finished setting up student attendance tracker on this device!"
