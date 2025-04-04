@@ -26,12 +26,6 @@
           >
             Scheduler
           </router-link>
-          <router-link
-            to="/attendance"
-            class="text-gray-700 hover:text-green-600 text-sm font-medium"
-          >
-            Attendance
-          </router-link>
         </div>
       </div>
     </div>

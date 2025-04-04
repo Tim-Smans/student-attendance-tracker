@@ -4,17 +4,17 @@
       <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center">
         <div>
           <h2 class="text-lg leading-6 font-medium text-gray-900">
-            {{ classgroup.name }}
+            {{ session.classgroup.name }}
           </h2>
           <p class="mt-1 max-w-2xl text-sm text-gray-500">
-            Session on {{ formatDate(session.start_time) }}
+            Session on {{ formatDate(session.startTime) }}
           </p>
         </div>
         <div class="mt-3 sm:mt-0 flex items-center">
           <span
             class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800"
           >
-            {{ formatTimeRange(session.start_time, session.end_time) }}
+            {{ formatTimeRange(session.startTime, session.endTime) }}
           </span>
         </div>
       </div>
@@ -23,22 +23,18 @@
       <dl>
         <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
           <dt class="text-sm font-medium text-gray-500">Classroom</dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ classroom.name }}</dd>
+          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ classroom.roomName }}</dd>
         </div>
         <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-          <dt class="text-sm font-medium text-gray-500">Location</dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ classroom.location }}</dd>
-        </div>
-        <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
           <dt class="text-sm font-medium text-gray-500">Date</dt>
           <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-            {{ formatDate(session.start_time) }}
+            {{ formatDate(session.startTime) }}
           </dd>
         </div>
-        <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+        <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
           <dt class="text-sm font-medium text-gray-500">Time</dt>
           <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-            {{ formatTimeRange(session.start_time, session.end_time) }}
+            {{ formatTimeRange(session.startTime, session.endTime) }}
           </dd>
         </div>
       </dl>
@@ -61,6 +57,9 @@ export default {
       type: Object,
       required: true,
     },
+  },
+  mounted() {
+    console.log(this.classroom)
   },
   methods: {
     formatDate(dateString) {

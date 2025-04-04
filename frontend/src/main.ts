@@ -1,6 +1,6 @@
 import './assets/main.css'
 
-import { createMemoryHistory, createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import { createApp } from 'vue'
 import App from './App.vue'
 import ClassgroupOverview from './components/classgroupOverview/ClassgroupOverview.vue';
@@ -14,7 +14,7 @@ const routes = [
   { path: '/classgroup', component: ClassgroupOverview },
   { path: '/classgroup/new', component: NewClassgroup },
   { path: '/schedule', component: ClassroomScheduler },
-  { path: '/attendance/:sessionId', component: SessionAttendanceTracker, props: true },
+  { path: '/attendance/:sessionId', name: 'attendance', component: SessionAttendanceTracker, props: true }
 ]
 
 const router = createRouter({

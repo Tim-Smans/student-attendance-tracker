@@ -90,7 +90,8 @@
                 class="absolute left-0 right-0 mx-1 rounded-md px-2 py-1 text-xs font-medium text-white overflow-hidden cursor-pointer"
                 :class="getSessionColor(session.classgroupId)"
                 :style="getSessionStyle(session, hour)"
-                @click="editSession(session)"
+                @click="handleClick(session)"
+                @dblclick="handleDoubleClick(session)"
               >
                 <div class="font-bold truncate">{{ getClassgroupName(session.classgroupId) }}</div>
                 <div class="truncate">{{ formatSessionTime(session) }}</div>
@@ -252,6 +253,30 @@ export default {
     },
     deleteSession(session) {
       this.$emit('delete-session', session)
+    },
+    openAttendance(session) {
+      if (!session || !session.id) {
+        console.error('Invalid session object', session)
+        return
+      }
+      this.$router.replace({ name: 'attendance', params: { sessionId: session.id } })
+    },
+    handleClick(session) {
+      if (this.clickTimeout) {
+        clearTimeout(this.clickTimeout)
+        this.clickTimeout = null
+      }
+      this.clickTimeout = setTimeout(() => {
+        this.editSession(session)
+        this.clickTimeout = null
+      }, 250)
+    },
+    handleDoubleClick(session) {
+      if (this.clickTimeout) {
+        clearTimeout(this.clickTimeout)
+        this.clickTimeout = null
+      }
+      this.openAttendance(session)
     },
   },
 }

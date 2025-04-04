@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException, Query
 from fastapi.responses import JSONResponse
 from models.sql_alchemy.class_session import ClassSession
 from schemas.class_session import ClassSessionSchema
-from services.class_session_service import create_session, delete_session, get_all_sessions, get_attendances_by_session, update_session
+from services.class_session_service import create_session, delete_session, get_all_sessions, get_attendances_by_session, get_full_session, update_session
 from services.auth_service import verify_api_key
 from fastapi import APIRouter
 from exceptions.not_found_error import NotFoundError
@@ -25,15 +25,15 @@ async def get_class_sessions(
         logger.error(f"Unexpected error in get_class_sessions: {e}")   
         raise HTTPException(status_code=500, detail=f"{str(e)}")
     
-@router.get("/{class_session_id}/attendances", dependencies=[Depends(verify_api_key)])
-async def get_attendances_by_session_id(class_session_id: str):
+@router.get("/{class_session_id}/full", dependencies=[Depends(verify_api_key)])
+async def get_session_by_id_full(class_session_id: str):
     try:
-        class_sessions = get_attendances_by_session(class_session_id)
+        class_session = get_full_session(class_session_id)
 
-        return class_sessions
+        return class_session
     
     except Exception as e:
-        logger.error(f"Unexpected error in get_class_sessions: {e}")   
+        logger.error(f"Unexpected error in get_session_by_id_full: {e}")   
         raise HTTPException(status_code=500, detail=f"{str(e)}")
     
 

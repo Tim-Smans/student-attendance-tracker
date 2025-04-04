@@ -35,29 +35,24 @@
             >
               Status
             </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Note
-            </th>
-            <th
-              scope="col"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Last Updated
-            </th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="student in students" :key="student.id" class="hover:bg-gray-50">
+          <tr
+            v-for="student in students"
+            :key="student.studentNumber"
+            :class="[
+              'hover:bg-gray-50',
+              hasAttended(student.studentNumber) ? 'bg-green-100' : 'bg-red-100',
+            ]"
+          >
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex items-center">
                 <input
                   type="checkbox"
                   class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-                  :checked="isSelected(student.id)"
-                  @change="toggleSelect(student.id)"
+                  :checked="isSelected(student.studentNumber)"
+                  @change="toggleSelect(student.studentNumber)"
                 />
               </div>
             </td>
@@ -81,28 +76,10 @@
               </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {{ student.studentId }}
+              {{ student.studentNumber }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <AttendanceStatusSelector
-                :studentId="student.id"
-                :status="getAttendanceStatus(student.id)"
-                @update-status="updateAttendance"
-              />
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="flex items-center">
-                <input
-                  type="text"
-                  :value="getAttendanceNote(student.id)"
-                  @input="updateNote(student.id, $event.target.value)"
-                  placeholder="Add note..."
-                  class="shadow-sm focus:ring-green-500 focus:border-green-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                />
-              </div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {{ formatTimestamp(getAttendanceTimestamp(student.id)) }}
+              {{ hasAttended(student.studentNumber) ? 'Present' : 'Absent' }}
             </td>
           </tr>
         </tbody>
@@ -132,18 +109,14 @@
 </template>
 
 <script>
-import AttendanceStatusSelector from './AttendanceStatusSelector.vue'
-
 export default {
-  components: {
-    AttendanceStatusSelector,
-  },
+  components: {},
   props: {
     students: {
       type: Array,
       required: true,
     },
-    attendanceRecords: {
+    attendedStudents: {
       type: Array,
       required: true,
     },
@@ -161,26 +134,11 @@ export default {
     getInitials(firstName, lastName) {
       return `${firstName.charAt(0)}${lastName.charAt(0)}`
     },
-    getAttendanceStatus(studentId) {
-      const record = this.attendanceRecords.find((r) => r.studentId === studentId)
-      return record ? record.status : 'absent'
-    },
-    getAttendanceNote(studentId) {
-      const record = this.attendanceRecords.find((r) => r.studentId === studentId)
-      return record ? record.note : ''
-    },
-    getAttendanceTimestamp(studentId) {
-      const record = this.attendanceRecords.find((r) => r.studentId === studentId)
-      return record ? record.timestamp : null
-    },
-    updateAttendance(studentId, status) {
-      this.$emit('update-attendance', studentId, status)
-    },
-    updateNote(studentId, note) {
-      this.$emit('update-note', studentId, note)
-    },
     isSelected(studentId) {
       return this.selectedStudents.includes(studentId)
+    },
+    hasAttended(studentId) {
+      return this.attendedStudents.some((student) => student.studentNumber === studentId)
     },
     toggleSelect(studentId) {
       this.$emit('toggle-select', studentId)

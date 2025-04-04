@@ -1,7 +1,6 @@
 export interface Attendance {
+  id: string
   studentId: string;
-  lastname: string;
-  firstname: string;
-  email: string;
-  degreeProgramme: string;
+  timestamp: Date;
+  classSessionId: string;
 }

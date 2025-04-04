@@ -3,6 +3,11 @@ import type { Student } from '@/models/student';
 import {instance} from '@/helpers/axiosHelpers';
 import axios from 'axios';
 
+/**
+ * Creates all students in the given list. Does not overwrite existing students.
+ * @param students List of students to create
+ * @returns Promise that resolves when all students have been created
+ */
 export const createStudentsFromList = async (students: Student[]) => {
 
   for(const student of students) {
@@ -38,6 +43,10 @@ export const createStudent = async (student: Student) => {
 
 };
 
+/**
+ * Gets the total number of students in the database.
+ * @returns Promise that resolves to the total number of students
+ */
 export const getTotalStudentCount = async () => {
   try {
     const { data } = await instance.get('/students/');
@@ -49,6 +58,14 @@ export const getTotalStudentCount = async () => {
 }
 
 
+
+
+
+/**
+ * Checks if a student with the given student_id exists in the database.
+ * @param student_id The id of the student to check
+ * @returns A promise that resolves to true if the student exists, false otherwise
+ */
 const checkIfStudentExists = async (student_id: string): Promise<boolean> => {
   try {
     const { data } = await instance.get(`/students/${student_id}`);

@@ -24,7 +24,7 @@
                   d="M10 19l-7-7m0 0l7-7m-7 7h18"
                 />
               </svg>
-              Back to Schedule
+              Back
             </button>
           </div>
         </div>
@@ -83,7 +83,7 @@
         <SessionInfoHeader :session="session" :classgroup="classgroup" :classroom="classroom" />
 
         <!-- Attendance Summary -->
-        <AttendanceSummary :attendanceStats="attendanceStats" class="mt-6" />
+        <AttendanceSummary :absent="absent" :present="present" class="mt-6" />
 
         <!-- Attendance Controls -->
         <div class="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">
@@ -147,46 +147,12 @@
         <!-- Attendance Table -->
         <AttendanceTable
           :students="filteredStudents"
-          :attendanceRecords="attendanceRecords"
+          :attendedStudents="attendedStudents"
           :selectedStudents="selectedStudents"
-          @update-attendance="updateAttendance"
-          @update-note="updateNote"
           @toggle-select="toggleSelectStudent"
           @toggle-select-all="toggleSelectAll"
           class="mt-6"
         />
-
-        <!-- Save Button -->
-        <div class="mt-6 flex justify-end">
-          <button
-            @click="saveAttendance"
-            :disabled="!hasChanges || isSaving"
-            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <svg
-              v-if="isSaving"
-              class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                class="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"
-              ></circle>
-              <path
-                class="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-            <span>{{ isSaving ? 'Saving...' : 'Save Attendance' }}</span>
-          </button>
-        </div>
       </div>
     </main>
 
@@ -300,6 +266,8 @@
 import SessionInfoHeader from './SessionInfoHeader.vue'
 import AttendanceSummary from './AttendanceSummary.vue'
 import AttendanceTable from './AttendanceTable.vue'
+import { getFullSession } from '@/helpers/sessionHelpers'
+import { getStudentsFromClassgroup } from '@/helpers/classgroupHelpers'
 
 export default {
   components: {
@@ -316,14 +284,15 @@ export default {
   data() {
     return {
       isLoading: true,
-      isSaving: false,
       session: null,
       classgroup: null,
       classroom: null,
       students: [],
       attendanceRecords: [],
-      originalAttendanceRecords: [], // For tracking changes
+      attendedStudents: [],
       searchQuery: '',
+      absent: 0,
+      present: 0,
       bulkAction: '',
       selectedStudents: [],
       notification: {
@@ -343,39 +312,11 @@ export default {
       const query = this.searchQuery.toLowerCase()
       return this.students.filter(
         (student) =>
-          student.studentId.toLowerCase().includes(query) ||
+          student.studentNumber.toLowerCase().includes(query) ||
           student.firstName.toLowerCase().includes(query) ||
           student.lastName.toLowerCase().includes(query) ||
           student.email.toLowerCase().includes(query),
       )
-    },
-    attendanceStats() {
-      const total = this.attendanceRecords.length
-      if (total === 0) return { present: 0, absent: 0, late: 0, excused: 0 }
-
-      const counts = this.attendanceRecords.reduce((acc, record) => {
-        acc[record.status] = (acc[record.status] || 0) + 1
-        return acc
-      }, {})
-
-      return {
-        present: {
-          count: counts.present || 0,
-          percentage: Math.round(((counts.present || 0) / total) * 100),
-        },
-        absent: {
-          count: counts.absent || 0,
-          percentage: Math.round(((counts.absent || 0) / total) * 100),
-        },
-        late: {
-          count: counts.late || 0,
-          percentage: Math.round(((counts.late || 0) / total) * 100),
-        },
-        excused: {
-          count: counts.excused || 0,
-          percentage: Math.round(((counts.excused || 0) / total) * 100),
-        },
-      }
     },
     hasChanges() {
       if (!this.originalAttendanceRecords.length) return false
@@ -389,133 +330,28 @@ export default {
     this.fetchSessionData()
   },
   methods: {
-    fetchSessionData() {
-      // In a real app, this would be an API call
-      setTimeout(() => {
-        // Mock session data
-        this.session = {
-          id: 1,
-          start_time: '2025-04-03T09:00:00',
-          end_time: '2025-04-03T10:30:00',
-          classgroup_id: 1,
-          room_device_id: 1,
-        }
-
-        this.classgroup = {
-          id: 1,
-          name: 'Computer Science 101',
-        }
-
-        this.classroom = {
-          id: 1,
-          name: 'Room A101',
-          location: 'Building A, Floor 1',
-        }
-
-        // Mock student data
-        this.students = [
-          {
-            id: 1,
-            studentId: 'CS001',
-            firstName: 'John',
-            lastName: 'Doe',
-            email: 'john.doe@university.edu',
-            degreeProgramme: 'Computer Science',
-          },
-          {
-            id: 2,
-            studentId: 'CS002',
-            firstName: 'Jane',
-            lastName: 'Smith',
-            email: 'jane.smith@university.edu',
-            degreeProgramme: 'Computer Science',
-          },
-          {
-            id: 3,
-            studentId: 'CS003',
-            firstName: 'Michael',
-            lastName: 'Johnson',
-            email: 'michael.johnson@university.edu',
-            degreeProgramme: 'Software Engineering',
-          },
-          {
-            id: 4,
-            studentId: 'CS004',
-            firstName: 'Emily',
-            lastName: 'Williams',
-            email: 'emily.williams@university.edu',
-            degreeProgramme: 'Computer Science',
-          },
-          {
-            id: 5,
-            studentId: 'CS005',
-            firstName: 'David',
-            lastName: 'Brown',
-            email: 'david.brown@university.edu',
-            degreeProgramme: 'Data Science',
-          },
-          {
-            id: 6,
-            studentId: 'CS006',
-            firstName: 'Sarah',
-            lastName: 'Miller',
-            email: 'sarah.miller@university.edu',
-            degreeProgramme: 'Computer Science',
-          },
-          {
-            id: 7,
-            studentId: 'CS007',
-            firstName: 'James',
-            lastName: 'Wilson',
-            email: 'james.wilson@university.edu',
-            degreeProgramme: 'Software Engineering',
-          },
-          {
-            id: 8,
-            studentId: 'CS008',
-            firstName: 'Lisa',
-            lastName: 'Taylor',
-            email: 'lisa.taylor@university.edu',
-            degreeProgramme: 'Computer Science',
-          },
-        ]
-
-        // Mock attendance records
-        this.attendanceRecords = this.students.map((student) => ({
-          id: student.id,
-          sessionId: this.session.id,
-          studentId: student.id,
-          status:
-            Math.random() > 0.7
-              ? 'absent'
-              : Math.random() > 0.5
-                ? 'present'
-                : Math.random() > 0.5
-                  ? 'late'
-                  : 'excused',
-          note: '',
-          timestamp: new Date().toISOString(),
-        }))
-
-        // Store original records for change tracking
-        this.originalAttendanceRecords = JSON.parse(JSON.stringify(this.attendanceRecords))
-
-        this.isLoading = false
-      }, 1000)
+    async fetchStudents() {
+      this.students = await getStudentsFromClassgroup(this.session.classgroup.id)
     },
-    updateAttendance(studentId, status) {
-      const record = this.attendanceRecords.find((r) => r.studentId === studentId)
-      if (record) {
-        record.status = status
-        record.timestamp = new Date().toISOString()
-      }
-    },
-    updateNote(studentId, note) {
-      const record = this.attendanceRecords.find((r) => r.studentId === studentId)
-      if (record) {
-        record.note = note
-        record.timestamp = new Date().toISOString()
-      }
+    async fetchSessionData() {
+      this.session = await getFullSession(this.sessionId)
+      this.classgroup = this.session.classgroup
+      this.classroom = this.session.roomDevice
+      this.attendanceRecords = this.session.attendances
+      await this.fetchStudents()
+
+      const allStudents = await getStudentsFromClassgroup(this.session.classgroup.id)
+
+      const attendedStudentIds = this.attendanceRecords.map((record) => record.studentId)
+
+      this.attendedStudents = allStudents.filter((student) =>
+        attendedStudentIds.includes(student.studentNumber),
+      )
+
+      this.present = this.attendedStudents.length
+      this.absent = this.students.length - this.present
+
+      this.isLoading = false
     },
     toggleSelectStudent(studentId) {
       const index = this.selectedStudents.indexOf(studentId)
@@ -532,39 +368,9 @@ export default {
         this.selectedStudents = []
       }
     },
-    applyBulkAction() {
-      if (!this.bulkAction) return
 
-      const studentsToUpdate =
-        this.selectedStudents.length > 0
-          ? this.selectedStudents
-          : this.filteredStudents.map((student) => student.id)
-
-      studentsToUpdate.forEach((studentId) => {
-        this.updateAttendance(studentId, this.bulkAction)
-      })
-
-      this.showNotification(
-        'success',
-        `${studentsToUpdate.length} students marked as ${this.bulkAction}`,
-      )
-      this.bulkAction = ''
-      this.selectedStudents = []
-    },
-    saveAttendance() {
-      this.isSaving = true
-
-      // In a real app, this would be an API call
-      setTimeout(() => {
-        // Update original records after save
-        this.originalAttendanceRecords = JSON.parse(JSON.stringify(this.attendanceRecords))
-        this.isSaving = false
-        this.showNotification('success', 'Attendance records saved successfully')
-      }, 1500)
-    },
     goBack() {
-      // In a real app, this would navigate back to the schedule page
-      alert('Navigate back to schedule page')
+      this.$router.go(-1)
     },
     showNotification(type, message) {
       // Clear any existing timeout

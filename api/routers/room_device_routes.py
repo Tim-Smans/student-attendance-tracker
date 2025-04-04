@@ -1,5 +1,6 @@
 from fastapi import Depends, HTTPException, Query
 from fastapi.responses import JSONResponse
+from models.pydantic.room_device import RoomDeviceWithSessionsOut
 from models.sql_alchemy.room_device import RoomDevice
 from schemas.room_device import RoomDeviceSchema
 from services.room_device_service import create_device, delete_device, get_all_devices, get_class_sessions_from_device, update_device
@@ -25,13 +26,13 @@ async def get_room_devices(
         logger.error(f"Unexpected error in get_room_devices: {e}")   
         raise HTTPException(status_code=500, detail=f"{str(e)}")
     
-@router.get("/{device_id}/sessions", dependencies=[Depends(verify_api_key)])
+@router.get("/{device_id}/sessions", dependencies=[Depends(verify_api_key)], response_model=RoomDeviceWithSessionsOut)
 async def get_sessions_from_device_by_id(device_id: str):
     try:
         room_device = get_class_sessions_from_device(device_id)
 
-        return room_device
-    
+        return RoomDeviceWithSessionsOut.model_validate(room_device)
+        
     except Exception as e:
         logger.error(f"Unexpected error in get_sessions_from_device_by_id: {e}")   
         raise HTTPException(status_code=500, detail=f"{str(e)}")

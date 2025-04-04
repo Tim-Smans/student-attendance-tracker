@@ -69,9 +69,9 @@ def get_all_devices(page: int, limit: int):
         )
 
 def get_class_sessions_from_device(device_id: str):
-    room_device = session.query(RoomDevice).filter_by(id=device_id).first()
+    room_device = session.query(RoomDevice).filter(RoomDevice.id == device_id).first()
 
-    if(room_device):
-        return {"class_sessions": room_device.class_sessions}
-    else:
+    if not room_device:
         raise NotFoundError("Room device does not exist", 404)
+
+    return room_device

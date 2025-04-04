@@ -1,5 +1,5 @@
 from uuid import UUID
-from models.pydantic.class_session import ClassSessionOut
+from models.pydantic.class_session import ClassSessionOut, FullClassSessionOut
 from models.sql_alchemy.class_session import ClassSession
 from schemas.class_session import ClassSessionSchema
 from models.pydantic.paginated_response import PaginatedResponse
@@ -69,6 +69,13 @@ def get_all_sessions(page: int, limit: int):
         limit=limit,
         items=[ClassSessionOut.model_validate(cs) for cs in class_sessions]  # convert to Pydantic  
         )
+
+def get_full_session(session_id: UUID):
+
+    class_session = session.query(ClassSession).filter_by(id=session_id).first()
+
+    return FullClassSessionOut.model_validate(class_session)
+
 
 def get_attendances_by_session(session_id: str):
     class_sessions = session.query(ClassSession).filter_by(id=session_id).first()
