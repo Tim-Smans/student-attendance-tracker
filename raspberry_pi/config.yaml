@@ -1,0 +1,4 @@
+room_name: "EDIT ME!"
+# Leave this blank to use the CPU serial 
+device_identifier: ""
+api_key: "api key here"
