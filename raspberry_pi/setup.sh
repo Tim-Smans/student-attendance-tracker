@@ -1,5 +1,6 @@
 set -e
 
+CONFIG_FILE="config.yaml"
 
 if ! command -v yq &> /dev/null
 then
