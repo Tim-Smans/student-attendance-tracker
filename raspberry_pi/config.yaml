@@ -1,6 +1,6 @@
 # Do not use spaces in the values in this file
 
 room_name: "EDIT_ME!"
-# Leave this blank to use the CPU serial 
-device_identifier: "EDIT_ME!"
+# Leave this blank to use the CPU serial (Heavily recomended)
+device_identifier: ""
 api_key: "api_key_here"
