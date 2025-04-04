@@ -3,8 +3,21 @@ set -e
 
 if ! command -v yq &> /dev/null
 then
-    echo "🔍 yq not found, installing temporarily..."
-    wget -qO yq "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64"
+    echo "yq not found, installing temporarily..."
+
+    ARCH=$(uname -m)
+
+    if [[ "$ARCH" == "aarch64" ]]; then
+        echo "ARM64 architecture detected"
+        wget -qO yq "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_arm64"
+    elif [[ "$ARCH" == "armv7l" ]]; then
+        echo "ARMv7 architecture detected"
+        wget -qO yq "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_arm"
+    else
+        echo "Unsupported architecture: $ARCH"
+        exit 1
+    fi
+
     chmod +x yq
 fi
 
@@ -13,9 +26,8 @@ DEVICE_IDENTIFIER=$(./yq '.device_identifier' $CONFIG_FILE)
 API_KEY=$(./yq '.api_key' $CONFIG_FILE)
 
 
-# 👉 Als device_identifier nog "EDIT ME!" is, pak dan automatisch serial
 if [ "$DEVICE_IDENTIFIER" = "\"\"" ]; then
-    echo "🎯 DEVICE_IDENTIFIER was not set, generating from CPU Serial..."
+    echo "DEVICE_IDENTIFIER was not set, generating from CPU Serial..."
     DEVICE_IDENTIFIER=$(awk '/Serial/ {print $3}' /proc/cpuinfo)
 fi
 
