@@ -94,3 +94,17 @@ def get_active_session_from_device(device_id: str):
         raise NotFoundError("No active session found.", 404)
 
     return active_session
+
+
+def get_device_by_identifier(device_identifier: str):
+    
+    room_device = (
+        session.query(RoomDevice)
+        .filter(RoomDevice.device_identifier == device_identifier)
+        .first()
+    )
+
+    if not room_device:
+        raise NotFoundError("No room device found with that identigier.", 404)
+
+    return room_device
