@@ -18,7 +18,8 @@ def get_active_session():
 
 def get_current_device():
   this_device = get("roomdevices/device_identifier/" + get_device_identifier())
-  return this_device
+  print(this_device.json())
+  return this_device.json()
 
 
 get_active_session()
