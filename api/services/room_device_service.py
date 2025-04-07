@@ -102,10 +102,9 @@ def get_active_session_from_device(device_id: str):
     end_time = active_session.end_time
 
     # Fix start_time en end_time als ze geen tzinfo hebben
-    if start_time.tzinfo is None:
-        start_time = start_time.replace(tzinfo=ZoneInfo("Europe/Helsinki"))
-    if end_time.tzinfo is None:
-        end_time = end_time.replace(tzinfo=ZoneInfo("Europe/Helsinki"))
+
+    start_time = start_time.replace(tzinfo=ZoneInfo("Europe/Helsinki"))
+    end_time = end_time.replace(tzinfo=ZoneInfo("Europe/Helsinki"))
 
     print(f"start_time: {start_time}")
     print(f"end_time: {end_time}")
