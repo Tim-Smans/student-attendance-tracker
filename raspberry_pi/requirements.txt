@@ -1,4 +1,2 @@
 opencv-python
-pyzbar
-python-dotenv
-requests
+pytesseract
