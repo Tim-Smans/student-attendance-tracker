@@ -88,6 +88,8 @@ def get_active_session_from_device(device_id: str):
 
     # Convert to UTC and remove timezone info (assuming database stores UTC as naive)
     now_utc = now_helsinki.astimezone(ZoneInfo("UTC")).replace(tzinfo=None)
+    
+    print(f"time now.utc: {now_utc}")
 
     active_session = (
         session.query(ClassSession)
