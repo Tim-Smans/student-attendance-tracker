@@ -89,7 +89,10 @@ def get_active_session_from_device(device_id: str):
     active_session = (
         session.query(ClassSession)
         .filter(ClassSession.room_device_id == device_id)
-        .filter(ClassSession.start_time <= now, ClassSession.end_time >= now)
+        .filter(
+            ClassSession.start_time.replace(tzinfo=ZoneInfo("Europe/Helsinki")) <= now,
+            ClassSession.end_time.replace(tzinfo=ZoneInfo("Europe/Helsinki")) >= now
+        )
         .first()
     )
 
@@ -100,6 +103,7 @@ def get_active_session_from_device(device_id: str):
 
 
 def get_device_by_identifier(device_identifier: str):
+    
     
     room_device = (
         session.query(RoomDevice)
