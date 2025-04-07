@@ -65,19 +65,36 @@ export const getClassgroupById = async (id: string): Promise<ClassGroup | null> 
 
 export const getStudentsFromClassgroup = async (classGroupId: string): Promise<Student[]> => {
   try {
-    const { data } = await instance.get(`/classgroups/${classGroupId}/students/`);
+    let students: Student[] = []
+    let page = 1
+    let hasMore = true
 
-    const students: Student[] = data.items.map((student: StudentResponse) => {
-      return {
+    while (hasMore) {
+      const { data } = await instance.get(`/classgroups/${classGroupId}/students/`, {
+        params: {
+          page,
+          limit: 10,
+        },
+      })
+
+      const pageStudents: Student[] = data.items.map((student: StudentResponse) => ({
         studentNumber: student.student_id,
         lastName: student.lastname,
         firstName: student.firstname,
         email: student.email,
         degreeProgramme: student.degree_programme,
-      };
-    });
+      }))
 
-    return students;
+      students = [...students, ...pageStudents]
+
+      if (pageStudents.length < 10) {
+        hasMore = false
+      } else {
+        page++
+      }
+    }
+
+    return students
   } catch (error) {
     console.error("API error:", error);
     throw error;
