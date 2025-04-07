@@ -82,19 +82,16 @@ def get_class_sessions_from_device(device_id: str):
 
 def get_active_session_from_device(device_id: str):
     # Get current time in Helsinki timezone
-    now_helsinki = datetime.now(ZoneInfo("Europe/Helsinki"))
+    now_helsinki = datetime.now(ZoneInfo("Europe/Helsinki")).replace(tzinfo=None)
     print(f"time: {now_helsinki}")
     print(f"device_id: {device_id}")
 
     # Convert to UTC and remove timezone info (assuming database stores UTC as naive)
-    now_utc = now_helsinki.astimezone(ZoneInfo("UTC")).replace(tzinfo=None)
-    
-    print(f"time now.utc: {now_utc}")
 
     active_session = (
         session.query(ClassSession)
         .filter(ClassSession.room_device_id == device_id)
-        .filter(ClassSession.start_time <= now_utc, ClassSession.end_time >= now_utc)
+        .filter(ClassSession.start_time <= now_helsinki, ClassSession.end_time >= now_helsinki)
         .first()
     )
 
