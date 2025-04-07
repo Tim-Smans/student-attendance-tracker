@@ -1,6 +1,6 @@
 from datetime import datetime
 from uuid import UUID
-
+from zoneinfo import ZoneInfo
 from fastapi import HTTPException
 from models.sql_alchemy.class_session import ClassSession
 from models.pydantic.room_device import RoomDeviceOut
@@ -81,11 +81,11 @@ def get_class_sessions_from_device(device_id: str):
     return room_device
 
 def get_active_session_from_device(device_id: str):
-    now = datetime.now()
+    now = datetime.now(ZoneInfo("Europe/Helsinki"))
 
     print(f"time: {now}")
     print(f"device_id: {device_id}")
-    
+
     active_session = (
         session.query(ClassSession)
         .filter(ClassSession.room_device_id == device_id)
