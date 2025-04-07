@@ -1,5 +1,5 @@
 import requests
-from config import API_KEY, BASE_URL
+from ..config import API_KEY, BASE_URL
 
 headers = {
     "Content-Type": "application/json",

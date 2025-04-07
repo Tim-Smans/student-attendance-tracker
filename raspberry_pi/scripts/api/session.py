@@ -1,9 +1,10 @@
 
-from client import get
-from utils.device_utils import get_device_identifier
+from .client import get
+from ..utils.device_utils import get_device_identifier
 
 
 def get_active_session():
+  
   current_device = get_current_device()
 
   if current_device is None:
