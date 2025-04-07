@@ -80,43 +80,28 @@ def get_class_sessions_from_device(device_id: str):
 
     return room_device
 
-from datetime import datetime
-from zoneinfo import ZoneInfo
-
 def get_active_session_from_device(device_id: str):
-    now = datetime.now(ZoneInfo("Europe/Helsinki"))
-
-    print(f"time: {now}")
+    # Get current time in Helsinki timezone
+    now_helsinki = datetime.now(ZoneInfo("Europe/Helsinki"))
+    print(f"time: {now_helsinki}")
     print(f"device_id: {device_id}")
+
+    # Convert to UTC and remove timezone info (assuming database stores UTC as naive)
+    now_utc = now_helsinki.astimezone(ZoneInfo("UTC")).replace(tzinfo=None)
 
     active_session = (
         session.query(ClassSession)
         .filter(ClassSession.room_device_id == device_id)
+        .filter(ClassSession.start_time <= now_utc, ClassSession.end_time >= now_utc)
         .first()
     )
 
     if not active_session:
         raise NotFoundError("No active session found.", 404)
 
-    start_time = active_session.start_time
-    end_time = active_session.end_time
-
-    # Fix start_time en end_time als ze geen tzinfo hebben
-
-    start_time = start_time.astimezone(ZoneInfo("Europe/Helsinki"))
-    end_time = end_time.astimezone(ZoneInfo("Europe/Helsinki"))
-
-    print(f"start_time: {start_time}")
-    print(f"end_time: {end_time}")
-
-    if start_time <= now <= end_time:
-        return active_session
-    else:
-        raise NotFoundError("No active session found.", 404)
-
+    return active_session
 
 def get_device_by_identifier(device_identifier: str):
-    
     
     room_device = (
         session.query(RoomDevice)
