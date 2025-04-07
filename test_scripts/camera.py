@@ -6,7 +6,6 @@ import time
 import os
 
 def preprocess(image):
-    # Preprocessing stap
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
     enhanced = clahe.apply(gray)
@@ -26,27 +25,26 @@ def extract_ids(text):
             peppi_id = num
     return student_id, peppi_id
 
-# Open de camera
-camera = cv2.VideoCapture(0, cv2.CAP_V4L2)
-
-if not camera.isOpened():
-    print("FOUT: Kan camera niet openen.")
-    exit()
-
-print("✅ Camera gestart. Zoek naar blauwe achtergrond...")
+print("✅ Scanner gestart. Zoekt automatisch naar blauw...")
 
 # Main loop
 while True:
-    ret, frame = camera.read()
-    if not ret:
-        print("FOUT: Frame niet gelezen.")
-        break
+    timestamp = int(time.time())
+    filename = f"snapshot_{timestamp}.jpg"
+    
+    # Maak snapshot
+    os.system(f'libcamera-jpeg -o {filename} --width 640 --height 480 --nopreview')
 
-    # Verklein voor snellere analyse
-    small_frame = cv2.resize(frame, (320, 240))
-    hsv = cv2.cvtColor(small_frame, cv2.COLOR_BGR2HSV)
+    # Laad snapshot
+    image = cv2.imread(filename)
+    if image is None:
+        print("FOUT: snapshot niet geladen.")
+        continue
 
-    # Blauwe detectie
+    # Snelheid verhogen: verklein foto voor blauw detectie
+    small = cv2.resize(image, (320, 240))
+    hsv = cv2.cvtColor(small, cv2.COLOR_BGR2HSV)
+
     lower_blue = np.array([100, 100, 50])
     upper_blue = np.array([140, 255, 255])
     mask = cv2.inRange(hsv, lower_blue, upper_blue)
@@ -55,18 +53,13 @@ while True:
     total_pixels = mask.shape[0] * mask.shape[1]
     blue_ratio = blue_pixels / total_pixels
 
-    # Live preview
-    cv2.imshow('Live Preview', small_frame)
+    print(f"🔵 Blue detected: {blue_ratio:.2%}")
 
-    # Automatische capture bij veel blauw
-    if blue_ratio > 0.2:  # Bijv. meer dan 20% blauw
-        timestamp = int(time.time())
-        filename = f"capture_{timestamp}.jpg"
-        print(f"📸 Blauwe achtergrond gedetecteerd ({blue_ratio:.2%}). Foto nemen...")
-        cv2.imwrite(filename, frame)
+    if blue_ratio > 0.2:
+        print(f"📸 Genoeg blauw! OCR wordt uitgevoerd...")
 
         # Preprocessing
-        processed = preprocess(frame)
+        processed = preprocess(image)
         processed_filename = f"preprocessed_{timestamp}.png"
         cv2.imwrite(processed_filename, processed)
         print(f"✅ Preprocessed opgeslagen als: {processed_filename}")
@@ -92,14 +85,10 @@ while True:
         else:
             print("❌ Geen Peppi ID gevonden.")
 
-        # Wachten zodat je niet continu foto's maakt
-        print("⏳ Even wachten om volgende scans te vermijden...")
+        # Wachten om niet direct opnieuw te scannen
         time.sleep(3)
 
-    # Druk 'q' om te stoppen
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        print("🛑 Gestopt.")
-        break
+    else:
+        # Wachten een korte tijd voor volgende foto
+        time.sleep(0.5)
 
-camera.release()
-cv2.destroyAllWindows()
