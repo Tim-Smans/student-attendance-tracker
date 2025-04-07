@@ -18,3 +18,6 @@ def get_active_session():
 def get_current_device():
   this_device = get("roomdevices/device_identifier/" + get_device_identifier())
   return this_device
+
+
+get_active_session()
