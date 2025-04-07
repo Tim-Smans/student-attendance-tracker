@@ -1,5 +1,5 @@
 
-from api.client import get
+from client import get
 from utils.device_utils import get_device_identifier
 
 
