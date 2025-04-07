@@ -80,6 +80,9 @@ def get_class_sessions_from_device(device_id: str):
 
     return room_device
 
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
 def get_active_session_from_device(device_id: str):
     now = datetime.now(ZoneInfo("Europe/Helsinki"))
 
@@ -89,17 +92,24 @@ def get_active_session_from_device(device_id: str):
     active_session = (
         session.query(ClassSession)
         .filter(ClassSession.room_device_id == device_id)
-        .filter(
-            ClassSession.start_time.replace(tzinfo=ZoneInfo("Europe/Helsinki")) <= now,
-            ClassSession.end_time.replace(tzinfo=ZoneInfo("Europe/Helsinki")) >= now
-        )
         .first()
     )
 
     if not active_session:
         raise NotFoundError("No active session found.", 404)
 
-    return active_session
+    start_time = active_session.start_time
+    end_time = active_session.end_time
+
+    if start_time.tzinfo is None:
+        start_time = start_time.replace(tzinfo=ZoneInfo("Europe/Helsinki"))
+    if end_time.tzinfo is None:
+        end_time = end_time.replace(tzinfo=ZoneInfo("Europe/Helsinki"))
+
+    if start_time <= now <= end_time:
+        return active_session
+    else:
+        raise NotFoundError("No active session found.", 404)
 
 
 def get_device_by_identifier(device_identifier: str):
