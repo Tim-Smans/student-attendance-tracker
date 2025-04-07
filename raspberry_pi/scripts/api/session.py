@@ -11,7 +11,7 @@ def get_active_session():
     return None
   
   active_session = get("roomdevices/" + current_device["id"] + "/active_session")
-
+  print(active_session.json())
   return active_session.json()
 
 
