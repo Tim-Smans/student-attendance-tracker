@@ -1,9 +1,11 @@
+from typing import List
 from fastapi import Depends, HTTPException, Query
 from fastapi.responses import JSONResponse
+from models.pydantic.class_session import ClassSessionOut
 from models.pydantic.room_device import RoomDeviceWithSessionsOut
 from models.sql_alchemy.room_device import RoomDevice
 from schemas.room_device import RoomDeviceSchema
-from services.room_device_service import create_device, delete_device, get_all_devices, get_class_sessions_from_device, update_device
+from services.room_device_service import create_device, delete_device, get_active_session_from_device, get_all_devices, get_class_sessions_from_device, update_device
 from services.auth_service import verify_api_key
 from fastapi import APIRouter
 from exceptions.not_found_error import NotFoundError
@@ -35,6 +37,20 @@ async def get_sessions_from_device_by_id(device_id: str):
         
     except Exception as e:
         logger.error(f"Unexpected error in get_sessions_from_device_by_id: {e}")   
+        raise HTTPException(status_code=500, detail=f"{str(e)}")
+
+
+@router.get("/{device_id}/active_session", dependencies=[Depends(verify_api_key)], response_model=ClassSessionOut)
+async def read_active_session_from_device(device_id: str):
+    try:
+        session = get_active_session_from_device(device_id)
+
+        return ClassSessionOut.model_validate(session)
+        
+    except NotFoundError as e:
+        return JSONResponse(content={"message": "No current active sessions"}, status_code=404)   
+    except Exception as e:
+        logger.error(f"Unexpected error in read_active_session_from_device: {e}")   
         raise HTTPException(status_code=500, detail=f"{str(e)}")
     
 

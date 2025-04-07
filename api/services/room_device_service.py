@@ -1,4 +1,8 @@
+from datetime import datetime
 from uuid import UUID
+
+from fastapi import HTTPException
+from models.sql_alchemy.class_session import ClassSession
 from models.pydantic.room_device import RoomDeviceOut
 from models.sql_alchemy.room_device import RoomDevice
 from schemas.room_device import RoomDeviceSchema
@@ -75,3 +79,18 @@ def get_class_sessions_from_device(device_id: str):
         raise NotFoundError("Room device does not exist", 404)
 
     return room_device
+
+def get_active_session_from_device(device_id: str):
+    now = datetime.now()
+
+    active_session = (
+        session.query(ClassSession)
+        .filter(ClassSession.room_device_id == device_id)
+        .filter(ClassSession.start_time <= now, ClassSession.end_time >= now)
+        .first()
+    )
+
+    if not active_session:
+        raise NotFoundError("No active session found.", 404)
+
+    return active_session
