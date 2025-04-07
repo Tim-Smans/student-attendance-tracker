@@ -86,7 +86,6 @@ def get_active_session_from_device(device_id: str):
     print(f"time: {now_helsinki}")
     print(f"device_id: {device_id}")
 
-    # Convert to UTC and remove timezone info (assuming database stores UTC as naive)
 
     active_session = (
         session.query(ClassSession)
