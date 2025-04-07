@@ -83,6 +83,9 @@ def get_class_sessions_from_device(device_id: str):
 def get_active_session_from_device(device_id: str):
     now = datetime.now()
 
+    print(f"time: {now}")
+    print(f"device_id: {device_id}")
+    
     active_session = (
         session.query(ClassSession)
         .filter(ClassSession.room_device_id == device_id)

@@ -73,6 +73,10 @@ def get_all_sessions(page: int, limit: int):
 def get_full_session(session_id: UUID):
 
     class_session = session.query(ClassSession).filter_by(id=session_id).first()
+    
+    print(f"start_time: {class_session.start_time}")
+    print(f"endtime: {class_session.end_time}")
+    print(f"device: {class_session.room_device_id}")
 
     return FullClassSessionOut.model_validate(class_session)
 
