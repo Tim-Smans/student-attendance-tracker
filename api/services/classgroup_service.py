@@ -38,18 +38,11 @@ def create_classgroup(classgroup: ClassGroupSchema):
 
 
 def get_students_from_classgroup(classgroup_id: str, page: int, limit: int):
-    offset = (page - 1) * limit
-    total = session.query(ClassGroup_Student).filter_by(classgroup_id=classgroup_id).count()
-
-    links = session.query(ClassGroup_Student).filter_by(classgroup_id=classgroup_id).offset(offset).limit(limit).all()
+    links = session.query(ClassGroup_Student).filter_by(classgroup_id=classgroup_id).all()
     students = [link.student for link in links]
 
-    return PaginatedResponse(
-        total=total,
-        page=page,
-        limit=limit,
-        items=[StudentSchema.model_validate(s) for s in students]  # convert to Pydantic  
-        )
+    return [StudentSchema.model_validate(s) for s in students]
+        
 
 def get_classgroups(page: int, limit: int):
     offset = (page - 1) * limit

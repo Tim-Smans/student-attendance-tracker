@@ -13,3 +13,5 @@ def add_attendance(student_id, room):
         "student_id": student_id,
         "room": room
     })
+
+

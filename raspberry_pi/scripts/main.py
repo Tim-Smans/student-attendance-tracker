@@ -6,7 +6,7 @@ import os
 import numpy as np
 
 while True:
-    key = input("Druk ENTER om een foto te nemen, of typ 'q' om te stoppen: ")
+    key = input("Press enter to take a picture, or type 'q' to stop: ")
 
     if key == 'q':
         break
