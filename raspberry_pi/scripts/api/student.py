@@ -1,5 +1,5 @@
-from api.client import post, get
-from raspberry_pi.scripts.api.session import get_active_session
+from .client import post, get
+from .session import get_active_session
 
 def check_student_exist(student_id):
     response = get(f"student/{student_id}")

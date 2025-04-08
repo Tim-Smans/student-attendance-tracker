@@ -5,8 +5,8 @@ import numpy as np
 import time
 import os
 
-from raspberry_pi.scripts.api.attendance import add_attendance
-from raspberry_pi.scripts.api.session import get_active_session
+from scripts.api.attendance import add_attendance
+from scripts.api.session import get_active_session
 
 def preprocess(image):
     """

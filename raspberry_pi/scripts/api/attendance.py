@@ -1,5 +1,5 @@
-from api.client import get, post
-from api.student import check_student_exist, add_student, is_student_in_session
+from .client import get, post
+from .student import check_student_exist, add_student, is_student_in_session
 
 def add_attendance(student_id, session_id):
     if is_student_in_session(student_id) is False:
