@@ -52,7 +52,7 @@ def is_student_in_session(student_id):
 
     students = get(f"classgroups/{session['classgroup_id']}/students")
 
-    for student in students:
+    for student in students.json():
         if student['student_id'] == student_id:
             return True
 
