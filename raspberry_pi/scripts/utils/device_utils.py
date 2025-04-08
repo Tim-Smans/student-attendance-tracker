@@ -15,3 +15,4 @@ def get_device_identifier():
             if line.startswith('Serial'):
                 return line.strip().split(':')[1].strip()
     return None
+

@@ -1,118 +1,105 @@
+import subprocess
+import numpy as np
 import cv2
 import pytesseract
-import re
-import numpy as np
 import time
-import os
 
+from scripts.utils.scanning_utils import extract_ids, preprocess
 from scripts.api.attendance import add_attendance
 from scripts.api.session import get_active_session
 
-def preprocess(image):
-    """
-    Preprocess an image before passing it to OCR.
+def start_camera():
+    # Start libcamera-still in stream mode
+    return subprocess.Popen(
+        [
+            "libcamera-still",
+            "--inline",
+            "--timeout", "0",  # One shot
+            "--nopreview",
+            "--output", "-",   # Output to stdout
+            "--width", "1280",
+            "--height", "720"
+        ],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL
+    )
 
-    The preprocessing steps are as follows:
+def read_frame(proc):
+    # Read JPEG image from stdout
+    data = b''
+    start = False
+    while True:
+        byte = proc.stdout.read(1)
+        if not byte:
+            break
+        data += byte
 
-    1. Grayscale conversion
-    2. Contrast limiting adaptive histogram equalization (CLAHE)
-    3. Blurring
-    4. Binary thresholding
+        # JPEG start
+        if data[-2:] == b'\xff\xd8':
+            start = True
+        # JPEG end
+        if start and data[-2:] == b'\xff\xd9':
+            image = cv2.imdecode(np.frombuffer(data, dtype=np.uint8), cv2.IMREAD_COLOR)
+            return image
 
-    :param image: The image to preprocess
-    :return: The preprocessed image
-    """
-    
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-    enhanced = clahe.apply(gray)
-    blurred = cv2.GaussianBlur(enhanced, (3, 3), 0)
-    _, processed = cv2.threshold(blurred, 130, 255, cv2.THRESH_BINARY)
-    return processed
+    return None
 
-def extract_ids(text):
-    """
-    Extracts the student ID and Peppi ID from the given text.
+def main_loop():
+    print("Starting live scanning...")
+    proc = start_camera()
 
-    The function expects the text to contain two numbers: a 7-digit student ID and a 6-digit Peppi ID.
-    The function returns a tuple containing the two IDs, or None if either ID could not be found.
+    if proc.stdout is None:
+        print("Error: Failed to start camera process.")
+        return
 
-    :param text: The text to extract the IDs from
-    :return: A tuple containing the student ID and Peppi ID, or None if either ID could not be found
-    """
+    while True:
+        frame = read_frame(proc)
 
-    numbers = re.findall(r'\d{6,7}', text)
-    student_id = None
-    peppi_id = None
+        if frame is None:
+            print("Error: Could not read frame.")
+            continue
 
-    for num in numbers:
-        if len(num) == 7 and not student_id:
-            student_id = num
-        elif len(num) == 6 and not peppi_id:
-            peppi_id = num
-    return student_id, peppi_id
+        # Blauw detectie
+        small = cv2.resize(frame, (320, 240))
+        hsv = cv2.cvtColor(small, cv2.COLOR_BGR2HSV)
 
-print("Started scanning for blue...")
+        lower_blue = np.array([100, 100, 50])
+        upper_blue = np.array([140, 255, 255])
+        mask = cv2.inRange(hsv, lower_blue, upper_blue)
 
-# Main loop
-while True:
-    timestamp = int(time.time())
-    filename = f"snapshot_{timestamp}.jpg"
-    
-    # Maak snapshot
-    os.system(f'libcamera-jpeg -o {filename} --width 1280 --height 720 --nopreview')
+        blue_pixels = cv2.countNonZero(mask)
+        total_pixels = mask.shape[0] * mask.shape[1]
+        blue_ratio = blue_pixels / total_pixels
 
-    # Laad snapshot
-    image = cv2.imread(filename)
-    if image is None:
-        print("FOUT: snapshot niet geladen.")
-        continue
+        print(f"Blue detected: {blue_ratio:.2%}")
 
-    # Snelheid verhogen: verklein foto voor blauw detectie
-    small = cv2.resize(image, (320, 240))
-    hsv = cv2.cvtColor(small, cv2.COLOR_BGR2HSV)
+        if blue_ratio > 0.2:
+            print("Enough blue, scanning...")
 
-    lower_blue = np.array([100, 100, 50])
-    upper_blue = np.array([140, 255, 255])
-    mask = cv2.inRange(hsv, lower_blue, upper_blue)
+            processed = preprocess(frame)
 
-    blue_pixels = cv2.countNonZero(mask)
-    total_pixels = mask.shape[0] * mask.shape[1]
-    blue_ratio = blue_pixels / total_pixels
+            # OCR
+            custom_config = r'--oem 3 --psm 6'
+            raw_text = pytesseract.image_to_string(processed, config=custom_config)
 
-    print(f"Blue detected: {blue_ratio:.2%}")
+            print("Scanned text:")
+            print(raw_text.strip())
 
-    if blue_ratio > 0.2:
-        print(f"Enough blue, scanning...")
+            # IDs extracten
+            student_id, peppi_id = extract_ids(raw_text)
 
-        # Preprocessing
-        processed = preprocess(image)
-        processed_filename = f"preprocessed_{timestamp}.png"
-        cv2.imwrite(processed_filename, processed)
+            print("\nResult:")
+            if student_id:
+                print(f"Student ID: {student_id}")
+                session = get_active_session()
+                print("Active session:", f"{session}")
+                response = add_attendance(student_id, session["id"])
+            else:
+                print("No Student ID found.")
 
-        # OCR
-        custom_config = r'--oem 3 --psm 6'
-        raw_text = pytesseract.image_to_string(processed, config=custom_config)
-
-        print("Scanned text:")
-        print(raw_text.strip())
-
-        # IDs extracten
-        student_id, peppi_id = extract_ids(raw_text)
-
-        print("\nResult:")
-        if student_id:
-            print(f"Student ID: {student_id}")
-            session = get_active_session()
-            print("Active session:", f"{session}")
-            response = add_attendance(student_id, session["id"])
+            time.sleep(3)
         else:
-            print("No Student ID found.")
+            time.sleep(0.5)
 
-        # Wait before scanning again
-        time.sleep(3)
-
-    else:
-        # Wait before scanning again
-        time.sleep(0.5)
-
+if __name__ == "__main__":
+    main_loop()
