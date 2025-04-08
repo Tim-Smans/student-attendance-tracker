@@ -9,39 +9,31 @@ from scripts.api.attendance import add_attendance
 from scripts.api.session import get_active_session
 
 def start_camera():
-    # Start libcamera-still in stream mode
+    # Start libcamera-vid in MJPEG streaming mode
     return subprocess.Popen(
         [
-            "libcamera-still",
+            "libcamera-vid",
+            "--codec", "mjpeg",
             "--inline",
-            "--timeout", "0",  # One shot
-            "--nopreview",
-            "--output", "-",   # Output to stdout
             "--width", "1280",
-            "--height", "720"
+            "--height", "720",
+            "--output", "-"
         ],
         stdout=subprocess.PIPE,
         stderr=subprocess.DEVNULL
     )
 
-def read_frame(proc):
-    # Read JPEG image from stdout
+def read_mjpeg_frame(proc):
+    # Lees MJPEG frames van stdout
     data = b''
-    start = False
     while True:
         byte = proc.stdout.read(1)
         if not byte:
             break
         data += byte
-
-        # JPEG start
-        if data[-2:] == b'\xff\xd8':
-            start = True
-        # JPEG end
-        if start and data[-2:] == b'\xff\xd9':
-            image = cv2.imdecode(np.frombuffer(data, dtype=np.uint8), cv2.IMREAD_COLOR)
-            return image
-
+        if data[-2:] == b'\xff\xd9':  # Einde van JPEG frame
+            frame = cv2.imdecode(np.frombuffer(data, dtype=np.uint8), cv2.IMREAD_COLOR)
+            return frame
     return None
 
 def main_loop():
@@ -53,7 +45,7 @@ def main_loop():
         return
 
     while True:
-        frame = read_frame(proc)
+        frame = read_mjpeg_frame(proc)
 
         if frame is None:
             print("Error: Could not read frame.")
