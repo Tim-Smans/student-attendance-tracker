@@ -105,7 +105,7 @@ while True:
             print(f"Student ID: {student_id}")
             session = get_active_session()
             print("Active session:", f"{session}")
-            response = add_attendance(student_id, session.id)
+            response = add_attendance(student_id, session["id"])
         else:
             print("No Student ID found.")
 
