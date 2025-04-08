@@ -66,33 +66,19 @@ export const getClassgroupById = async (id: string): Promise<ClassGroup | null> 
 export const getStudentsFromClassgroup = async (classGroupId: string): Promise<Student[]> => {
   try {
     let students: Student[] = []
-    let page = 1
-    let hasMore = true
 
-    while (hasMore) {
-      const { data } = await instance.get(`/classgroups/${classGroupId}/students/`, {
-        params: {
-          page,
-          limit: 10,
-        },
-      })
+    const { data } = await instance.get(`/classgroups/${classGroupId}/students/`)
 
-      const pageStudents: Student[] = data.items.map((student: StudentResponse) => ({
-        studentNumber: student.student_id,
-        lastName: student.lastname,
-        firstName: student.firstname,
-        email: student.email,
-        degreeProgramme: student.degree_programme,
-      }))
 
-      students = [...students, ...pageStudents]
+    const pageStudents: Student[] = data.map((student: StudentResponse) => ({
+      studentNumber: student.student_id,
+      lastName: student.lastname,
+      firstName: student.firstname,
+      email: student.email,
+      degreeProgramme: student.degree_programme,
+    }))
 
-      if (pageStudents.length < 10) {
-        hasMore = false
-      } else {
-        page++
-      }
-    }
+    students = [...students, ...pageStudents]
 
     return students
   } catch (error) {

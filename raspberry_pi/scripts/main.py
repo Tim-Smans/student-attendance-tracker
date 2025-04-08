@@ -1,72 +1,117 @@
 import cv2
 import pytesseract
 import re
+import numpy as np
 import time
 import os
-import numpy as np
 
-while True:
-    key = input("Press enter to take a picture, or type 'q' to stop: ")
+from raspberry_pi.scripts.api.attendance import add_attendance
+from raspberry_pi.scripts.api.session import get_active_session
 
-    if key == 'q':
-        break
+def preprocess(image):
+    """
+    Preprocess an image before passing it to OCR.
 
-    # When the user presses enter it will take a picture
-    timestamp = int(time.time())
-    filename = f"capture_{timestamp}.jpg"
-    os.system(f'libcamera-jpeg -o {filename} --width 1280 --height 720 --nopreview')
+    The preprocessing steps are as follows:
 
-    # Load the picture into OpenCV
-    image = cv2.imread(filename)
-    if image is None:
-        print("Error: No image found  .")
-        continue
+    1. Grayscale conversion
+    2. Contrast limiting adaptive histogram equalization (CLAHE)
+    3. Blurring
+    4. Binary thresholding
 
-    # Preprocessing the image
-    # 1. put the picture into grayscale
-    # 2. Better contract with CLAHE (Contrast limited adaptive histogram equalization)
-    # 3. Gaussian blur to reduce noise
-    # 4. Thresholding (we want to focus on the text) 130 is the threshold everything above 130 becomes white, everything under 130 becomes black
+    :param image: The image to preprocess
+    :return: The preprocessed image
+    """
+    
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
     enhanced = clahe.apply(gray)
     blurred = cv2.GaussianBlur(enhanced, (3, 3), 0)
     _, processed = cv2.threshold(blurred, 130, 255, cv2.THRESH_BINARY)
+    return processed
 
-    # Save the prepocessed image (just for debugging and tweaking)
-    processed_filename = f"preprocessed_{timestamp}.png"
-    cv2.imwrite(processed_filename, processed)
-    print(f"Preprocessed opgeslagen als: {processed_filename}")
+def extract_ids(text):
+    """
+    Extracts the student ID and Peppi ID from the given text.
 
-    # Using the OCR model to extract the text and put it into a variable
-    custom_config = r'--oem 3 --psm 6'
-    raw_text = pytesseract.image_to_string(processed, config=custom_config)
+    The function expects the text to contain two numbers: a 7-digit student ID and a 6-digit Peppi ID.
+    The function returns a tuple containing the two IDs, or None if either ID could not be found.
 
-    # Find all numbers in the image using regex
-    numbers = re.findall(r'\d{6,7}', raw_text)
+    :param text: The text to extract the IDs from
+    :return: A tuple containing the student ID and Peppi ID, or None if either ID could not be found
+    """
 
-    # Initialise IDs
+    numbers = re.findall(r'\d{6,7}', text)
     student_id = None
     peppi_id = None
 
-    # Check if the number is 6 or 7 digits, if it is 6 it is a peppi id, if it is 7 it is a student id (Temporary workaround)
     for num in numbers:
-        if len(num) == 7:
+        if len(num) == 7 and not student_id:
             student_id = num
-        elif len(num) == 6:
+        elif len(num) == 6 and not peppi_id:
             peppi_id = num
+    return student_id, peppi_id
 
-    # Output logs
-    print("\n📋 Scanned text:")
-    print(raw_text.strip())
+print("Started scanning for blue...")
 
-    print("\n Extracted IDs:")
-    if student_id:
-        print(f"Student ID: {student_id}")
+# Main loop
+while True:
+    timestamp = int(time.time())
+    filename = f"snapshot_{timestamp}.jpg"
+    
+    # Maak snapshot
+    os.system(f'libcamera-jpeg -o {filename} --width 1280 --height 720 --nopreview')
+
+    # Laad snapshot
+    image = cv2.imread(filename)
+    if image is None:
+        print("FOUT: snapshot niet geladen.")
+        continue
+
+    # Snelheid verhogen: verklein foto voor blauw detectie
+    small = cv2.resize(image, (320, 240))
+    hsv = cv2.cvtColor(small, cv2.COLOR_BGR2HSV)
+
+    lower_blue = np.array([100, 100, 50])
+    upper_blue = np.array([140, 255, 255])
+    mask = cv2.inRange(hsv, lower_blue, upper_blue)
+
+    blue_pixels = cv2.countNonZero(mask)
+    total_pixels = mask.shape[0] * mask.shape[1]
+    blue_ratio = blue_pixels / total_pixels
+
+    print(f"Blue detected: {blue_ratio:.2%}")
+
+    if blue_ratio > 0.2:
+        print(f"Enough blue, scanning...")
+
+        # Preprocessing
+        processed = preprocess(image)
+        processed_filename = f"preprocessed_{timestamp}.png"
+        cv2.imwrite(processed_filename, processed)
+
+        # OCR
+        custom_config = r'--oem 3 --psm 6'
+        raw_text = pytesseract.image_to_string(processed, config=custom_config)
+
+        print("Scanned text:")
+        print(raw_text.strip())
+
+        # IDs extracten
+        student_id, peppi_id = extract_ids(raw_text)
+
+        print("\nResult:")
+        if student_id:
+            print(f"Student ID: {student_id}")
+            session = get_active_session()
+            response = add_attendance(student_id, session.id)
+        else:
+            print("No Student ID found.")
+
+        # Wait before scanning again
+        time.sleep(3)
+
     else:
-        print("No Student ID found.")
+        # Wait before scanning again
+        time.sleep(0.5)
 
-    if peppi_id:
-        print(f"Peppi ID: {peppi_id}")
-    else:
-        print("No Peppi ID found.")

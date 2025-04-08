@@ -13,10 +13,47 @@ def add_student(student_id, institution_id):
         "institution_id": institution_id
     })
 
-def get_students_from_session(session_id):
+def get_students_from_session():
+    """
+    Gets the students in the current session, if any.
+
+    Returns:
+        list: A list of students in the current session, or an empty list if no session is active.
+    """
     session = get_active_session()
 
     if session is None:
         return []
 
-    return session["students"]
+    if(session['classgroup_id'] is None):
+        return []
+
+    students = get(f"classgroups/{session['classgroup_id']}/students")
+
+    return students
+
+def is_student_in_session(student_id):
+    """
+    Checks if a student is in the current session.
+
+    Args:
+        student_id (str): The id of the student to check.
+
+    Returns:
+        bool: True if the student is in the current session, False otherwise.
+    """
+    session = get_active_session()
+
+    if session is None:
+        return False
+
+    if(session['classgroup_id'] is None):
+        return False
+
+    students = get(f"classgroups/{session['classgroup_id']}/students")
+
+    for student in students:
+        if student['student_id'] == student_id:
+            return True
+
+    return False
