@@ -17,6 +17,7 @@ def start_camera():
             "--inline",
             "--width", "1280",
             "--height", "720",
+            "--timeout", "0",
             "--output", "-"
         ],
         stdout=subprocess.PIPE,
