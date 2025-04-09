@@ -16,7 +16,8 @@ print("Started scanning for blue...")
 while True:
 
     if not is_active_session():
-        time.sleep(3)
+        print("No active session. Waiting 10 seconds...")
+        time.sleep(10)
         continue
 
     timestamp = int(time.time())

@@ -17,7 +17,6 @@ def get_active_session():
     return None
   
   active_session = get("roomdevices/" + current_device["id"] + "/active_session")
-  print(active_session.json())
   return active_session.json()
 
 def  is_active_session():
@@ -46,7 +45,6 @@ def get_current_device():
     dict: The device object if the device exists, otherwise None.
   """
   this_device = get("roomdevices/device_identifier/" + get_device_identifier())
-  print(this_device.json())
   return this_device.json()
 
 
