@@ -15,18 +15,18 @@ print("Started scanning for blue...")
 # Main loop
 while True:
     timestamp = int(time.time())
-    filename = f"snapshot_{timestamp}.jpg"
+    filename = f"snapshot.jpg"
     
-    # Maak snapshot
+    # Create snapshot
     os.system(f'libcamera-jpeg -o {filename} --width 1280 --height 720 --nopreview')
 
-    # Laad snapshot
+    # Load snapshot
     image = cv2.imread(filename)
     if image is None:
         print("Error: Could not load.")
         continue
 
-    # Snelheid verhogen: verklein foto voor blauw detectie
+    # Highten speed: resize picture for blue detection
     small = cv2.resize(image, (320, 240))
     hsv = cv2.cvtColor(small, cv2.COLOR_BGR2HSV)
 
@@ -45,7 +45,7 @@ while True:
 
         # Preprocessing
         processed = preprocess(image)
-        processed_filename = f"preprocessed_{timestamp}.png"
+        processed_filename = f"preprocessed.png"
         cv2.imwrite(processed_filename, processed)
 
         # OCR
@@ -55,7 +55,7 @@ while True:
         print("Scanned text:")
         print(raw_text.strip())
 
-        # IDs extracten
+        # ID extraction
         student_id, peppi_id = extract_ids(raw_text)
 
         print("\nResult:")
