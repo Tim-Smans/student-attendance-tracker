@@ -34,7 +34,7 @@ def  is_active_session():
     return None
   
   active_session = get("roomdevices/" + current_device["id"] + "/active_session")
-  return active_session.status_code() == 200
+  return active_session.status_code == 200
 
 
 
