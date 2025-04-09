@@ -7,13 +7,18 @@ import os
 
 from scripts.utils.scanning_utils import extract_ids, preprocess
 from scripts.api.attendance import add_attendance
-from scripts.api.session import get_active_session
+from scripts.api.session import get_active_session, is_active_session
 
 
 print("Started scanning for blue...")
 
 # Main loop
 while True:
+
+    if not is_active_session():
+        time.sleep(3)
+        continue
+
     timestamp = int(time.time())
     filename = f"snapshot.jpg"
     

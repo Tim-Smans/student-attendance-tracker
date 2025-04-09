@@ -20,6 +20,22 @@ def get_active_session():
   print(active_session.json())
   return active_session.json()
 
+def  is_active_session():
+
+  """
+  Checks if there is an active session on the device where this function is ran.
+
+  Returns:
+    bool: True if there is an active session, False otherwise.
+  """
+  current_device = get_current_device()
+
+  if current_device is None:
+    return None
+  
+  active_session = get("roomdevices/" + current_device["id"] + "/active_session")
+  return active_session.status_code() == 200
+
 
 
 def get_current_device():
@@ -34,4 +50,3 @@ def get_current_device():
   return this_device.json()
 
 
-get_active_session()
