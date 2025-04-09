@@ -34,7 +34,7 @@ def extract_ids(text):
     :return: A tuple containing the student ID and Peppi ID, or None if either ID could not be found
     """
 
-    numbers = re.findall(r'\d{6,7}', text)
+    numbers = re.findall(r'\b\d{6,7}\b', text)
     student_id = None
     peppi_id = None
 
