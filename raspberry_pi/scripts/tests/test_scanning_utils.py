@@ -23,7 +23,7 @@ class TestScanningUtils:
 
     assert student_id == None and peppi_id == None
 
-  def test_preproccess_smoke(self):
+  def test_preprocess_smoke(self):
     #Generate a black image
     dummy_image = np.zeros((100, 100, 3), dtype=np.uint8)
 
