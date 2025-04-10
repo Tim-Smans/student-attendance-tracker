@@ -1,11 +1,11 @@
-from schemas.student import StudentSchema
-from models.pydantic.attendance import AttendanceOut
-from models.pydantic.student import StudentWithAttendanceOut
-from models.pydantic.paginated_response import PaginatedResponse
-from models.sql_alchemy.student import Student
-from services.session_service import session
-from exceptions.not_found_error import NotFoundError
-from exceptions.no_id_match_error import NoIdMatchError
+from ..schemas.student import StudentSchema
+from ..models.pydantic.attendance import AttendanceOut
+from ..models.pydantic.student import StudentWithAttendanceOut
+from ..models.pydantic.paginated_response import PaginatedResponse
+from ..models.sql_alchemy.student import Student
+from ..services.session_service import session
+from ..exceptions.not_found_error import NotFoundError
+from ..exceptions.no_id_match_error import NoIdMatchError
 
 
 def create_student(student: StudentSchema):

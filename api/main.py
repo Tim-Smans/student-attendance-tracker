@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from sqlalchemy import create_engine
-from config import DATABASE_URL
-from models.sql_alchemy.base import Base
-from routers import student_routes, attendance_routes, classgroup_routes, room_device_routes, class_session_routes
+from .config import DATABASE_URL
+from .models.sql_alchemy.base import Base
+from .routers import student_routes, attendance_routes, classgroup_routes, room_device_routes, class_session_routes
 from fastapi.middleware.cors import CORSMiddleware
 
 

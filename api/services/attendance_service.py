@@ -1,13 +1,13 @@
 from datetime import datetime
 
 from sqlalchemy import func
-from models.pydantic.paginated_response import PaginatedResponse
-from models.pydantic.attendance import AttendanceOut
-from exceptions.not_found_error import NotFoundError
-from services.session_service import session
-from models.sql_alchemy.base import Base
-from models.sql_alchemy.student import Student
-from models.sql_alchemy.attendance import Attendance
+from ..models.pydantic.paginated_response import PaginatedResponse
+from ..models.pydantic.attendance import AttendanceOut
+from ..exceptions.not_found_error import NotFoundError
+from ..services.session_service import session
+from ..models.sql_alchemy.base import Base
+from ..models.sql_alchemy.student import Student
+from ..models.sql_alchemy.attendance import Attendance
 
 
 def create_attendance(student_id: str, class_session_id: str):

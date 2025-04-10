@@ -1,11 +1,11 @@
 from uuid import UUID
-from models.pydantic.class_session import ClassSessionOut, FullClassSessionOut
-from models.sql_alchemy.class_session import ClassSession
-from schemas.class_session import ClassSessionSchema
-from models.pydantic.paginated_response import PaginatedResponse
-from services.session_service import session
-from exceptions.not_found_error import NotFoundError
-from exceptions.no_id_match_error import NoIdMatchError
+from ..models.pydantic.class_session import ClassSessionOut, FullClassSessionOut
+from ..models.sql_alchemy.class_session import ClassSession
+from ..schemas.class_session import ClassSessionSchema
+from ..models.pydantic.paginated_response import PaginatedResponse
+from ..services.session_service import session
+from ..exceptions.not_found_error import NotFoundError
+from ..exceptions.no_id_match_error import NoIdMatchError
 
 
 def create_session(class_session: ClassSessionSchema):

@@ -2,8 +2,8 @@ from datetime import datetime as dt
 from typing import List
 from uuid import UUID
 from pydantic import BaseModel, ConfigDict
-from models.pydantic.attendance import AttendanceOut
-from models.pydantic.classgroup import ClassgroupOut
+from .attendance import AttendanceOut
+from .classgroup import ClassgroupOut
 
 class ClassSessionOut(BaseModel):
     id: UUID  
@@ -15,7 +15,7 @@ class ClassSessionOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-from models.pydantic.room_device import RoomDeviceOut
+from .room_device import RoomDeviceOut
 class FullClassSessionOut(BaseModel):
     id: UUID  
     classgroup_id: UUID 

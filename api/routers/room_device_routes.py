@@ -1,14 +1,14 @@
 from typing import List
 from fastapi import Depends, HTTPException, Query
 from fastapi.responses import JSONResponse
-from models.pydantic.class_session import ClassSessionOut
-from models.pydantic.room_device import RoomDeviceOut, RoomDeviceWithSessionsOut
-from models.sql_alchemy.room_device import RoomDevice
-from schemas.room_device import RoomDeviceSchema
-from services.room_device_service import create_device, delete_device, get_active_session_from_device, get_all_devices, get_class_sessions_from_device, get_device_by_identifier, update_device
-from services.auth_service import verify_api_key
+from ..models.pydantic.class_session import ClassSessionOut
+from ..models.pydantic.room_device import RoomDeviceOut, RoomDeviceWithSessionsOut
+from ..models.sql_alchemy.room_device import RoomDevice
+from ..schemas.room_device import RoomDeviceSchema
+from ..services.room_device_service import create_device, delete_device, get_active_session_from_device, get_all_devices, get_class_sessions_from_device, get_device_by_identifier, update_device
+from ..services.auth_service import verify_api_key
 from fastapi import APIRouter
-from exceptions.not_found_error import NotFoundError
+from ..exceptions.not_found_error import NotFoundError
 import logging
 
 logger = logging.getLogger(__name__)

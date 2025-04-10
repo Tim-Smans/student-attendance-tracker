@@ -12,7 +12,7 @@ class RoomDeviceOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-from models.pydantic.class_session import ClassSessionOut
+from .class_session import ClassSessionOut
 class RoomDeviceWithSessionsOut(BaseModel):
     id: UUID  
     room_name: str 

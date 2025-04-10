@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from typing import List
-from models.pydantic.attendance import AttendanceOut
+from .attendance import AttendanceOut
 
 
 class StudentWithAttendanceOut(BaseModel):

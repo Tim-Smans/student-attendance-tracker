@@ -1,11 +1,11 @@
 from fastapi import Depends, HTTPException, Query
 from fastapi.responses import JSONResponse
-from models.sql_alchemy.class_session import ClassSession
-from schemas.class_session import ClassSessionSchema
-from services.class_session_service import create_session, delete_session, get_all_sessions, get_attendances_by_session, get_full_session, update_session
-from services.auth_service import verify_api_key
+from ..models.sql_alchemy.class_session import ClassSession
+from ..schemas.class_session import ClassSessionSchema
+from ..services.class_session_service import create_session, delete_session, get_all_sessions, get_attendances_by_session, get_full_session, update_session
+from ..services.auth_service import verify_api_key
 from fastapi import APIRouter
-from exceptions.not_found_error import NotFoundError
+from ..exceptions.not_found_error import NotFoundError
 import logging
 
 logger = logging.getLogger(__name__)

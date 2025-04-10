@@ -2,14 +2,14 @@ from datetime import datetime
 from uuid import UUID
 from zoneinfo import ZoneInfo
 from fastapi import HTTPException
-from models.sql_alchemy.class_session import ClassSession
-from models.pydantic.room_device import RoomDeviceOut
-from models.sql_alchemy.room_device import RoomDevice
-from schemas.room_device import RoomDeviceSchema
-from models.pydantic.paginated_response import PaginatedResponse
-from services.session_service import session
-from exceptions.not_found_error import NotFoundError
-from exceptions.no_id_match_error import NoIdMatchError
+from ..models.sql_alchemy.class_session import ClassSession
+from ..models.pydantic.room_device import RoomDeviceOut
+from ..models.sql_alchemy.room_device import RoomDevice
+from ..schemas.room_device import RoomDeviceSchema
+from ..models.pydantic.paginated_response import PaginatedResponse
+from ..services.session_service import session
+from ..exceptions.not_found_error import NotFoundError
+from ..exceptions.no_id_match_error import NoIdMatchError
 
 
 def create_device(room_device: RoomDeviceSchema):

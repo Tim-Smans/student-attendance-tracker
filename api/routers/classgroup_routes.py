@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import JSONResponse
-from exceptions.not_found_error import NotFoundError
-from services.classgroup_service import add_student_to_classgroup, create_classgroup, delete_classgroup, get_classgroup, get_classgroups, get_students_from_classgroup, remove_student_from_classgroup
-from schemas.classgroup import AddStudentToClassGroupSchema, ClassGroupSchema
-from services.auth_service import verify_api_key
+from ..exceptions.not_found_error import NotFoundError
+from ..services.classgroup_service import add_student_to_classgroup, create_classgroup, delete_classgroup, get_classgroup, get_classgroups, get_students_from_classgroup, remove_student_from_classgroup
+from ..schemas.classgroup import AddStudentToClassGroupSchema, ClassGroupSchema
+from ..services.auth_service import verify_api_key
 
 import logging
 
@@ -12,6 +12,7 @@ router = APIRouter()
 
 @router.post("/", dependencies=[Depends(verify_api_key)], status_code=201)
 async def post_classgroup(classgroup: ClassGroupSchema):
+    
     try:
         classgroup = create_classgroup(classgroup)
         return classgroup

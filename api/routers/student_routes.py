@@ -1,12 +1,12 @@
 import http
 from fastapi import Depends, HTTPException, Query, Response
 from fastapi.responses import JSONResponse
-from schemas.student import StudentSchema
-from services.student_service import create_student, get_all_students_with_attendance, get_student_with_attendance, update_student, delete_student
-from services.auth_service import verify_api_key
+from ..schemas.student import StudentSchema
+from ..services.student_service import create_student, get_all_students_with_attendance, get_student_with_attendance, update_student, delete_student
+from ..services.auth_service import verify_api_key
 from fastapi import APIRouter
-from exceptions.not_found_error import NotFoundError
-from models.sql_alchemy.student import Student
+from ..exceptions.not_found_error import NotFoundError
+from ..models.sql_alchemy.student import Student
 import logging
 
 logger = logging.getLogger(__name__)
@@ -70,7 +70,7 @@ async def put_student(student_id: str, student: StudentSchema):
     try:
         update_student(
             student_id=student_id,
-            newStudent=Student(student_id=student.student_id, institution_id=student.institution_id)
+            newStudent=Student(student_id=student.student_id, lastname=student.lastname, firstname=student.firstname, email=student.email, degree_programme=student.degree_programme)
         )
         return student
     except Exception as e:

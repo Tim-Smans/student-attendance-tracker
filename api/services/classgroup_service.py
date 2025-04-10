@@ -1,13 +1,13 @@
 import uuid
-from models.pydantic.classgroup import ClassgroupOut
-from models.sql_alchemy.student import Student
-from exceptions.not_found_error import NotFoundError
-from schemas.student import StudentSchema
-from models.pydantic.paginated_response import PaginatedResponse
-from models.sql_alchemy.classgroup_student import ClassGroup_Student
-from models.sql_alchemy.classgroup import ClassGroup
-from schemas.classgroup import AddStudentToClassGroupSchema, ClassGroupSchema
-from services.session_service import session
+from ..models.pydantic.classgroup import ClassgroupOut
+from ..models.sql_alchemy.student import Student
+from ..exceptions.not_found_error import NotFoundError
+from ..schemas.student import StudentSchema
+from ..models.pydantic.paginated_response import PaginatedResponse
+from ..models.sql_alchemy.classgroup_student import ClassGroup_Student
+from ..models.sql_alchemy.classgroup import ClassGroup
+from ..schemas.classgroup import AddStudentToClassGroupSchema, ClassGroupSchema
+from ..services.session_service import session
 
 
 def create_classgroup(classgroup: ClassGroupSchema):

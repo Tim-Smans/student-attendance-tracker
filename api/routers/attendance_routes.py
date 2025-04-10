@@ -2,10 +2,10 @@ from datetime import datetime
 from fastapi import Depends, HTTPException, Path, Query
 from fastapi.responses import JSONResponse
 from sqlalchemy import Date
-from exceptions.not_found_error import NotFoundError
-from schemas.attendance import AttendanceSchema
-from services.attendance_service import create_attendance, delete_attendance, get_all_attendances, get_attendance_by_id, get_attendances_by_date
-from services.auth_service import verify_api_key
+from ..exceptions.not_found_error import NotFoundError
+from ..schemas.attendance import AttendanceSchema
+from ..services.attendance_service import create_attendance, delete_attendance, get_all_attendances, get_attendance_by_id, get_attendances_by_date
+from ..services.auth_service import verify_api_key
 from fastapi import APIRouter
 import logging
 
