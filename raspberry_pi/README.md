@@ -5,12 +5,14 @@ This script allows you to easily set up a new device in the attendance system.
 
 ## ✅ Prerequisites
 
+Pull the latest version of this repository inside of the **home** directory of your device.
 
 Before running the script, ensure the following dependencies are met:
 
     - Raspberry Pi (At least model 3)
     - The Raspberry Pi AI Camera
     - Latest Raspberry Pi OS
+    - Have a working internet connection on the device
 
 
 
@@ -36,7 +38,7 @@ chmod +x setup.sh
 
 Step 3: Run the script
 `
-./setup_mlops.sh
+./setup.sh
 `
 
 While running the script:
@@ -44,7 +46,12 @@ While running the script:
 2. And will install all global packages and the libraries inside the virtual environment
 3. Runs the python script that adds the device to the database
 
-Step 3: Finish The installation
+Step 4: Finish The installation
 `
 Reboot the device to activate the scanning
+`
+
+Step 5: Add an environmental file with the API key:
+`
+API_KEY: <apikey>
 `

@@ -28,7 +28,7 @@ DEVICE_IDENTIFIER=$(awk '/Serial/ {print $3}' /proc/cpuinfo)
 
 
 sudo apt update
-sudo apt install libzbar0
+sudo apt install libzbar0 tesseract-ocr
 
 python3 -m venv .venv --system-site-packages
 source .venv/bin/activate
@@ -37,6 +37,35 @@ pip install -r requirements.txt
 
 python3 scripts/setup.py $ROOM_NAME $DEVICE_IDENTIFIER $API_KEY
 
-echo '/home/Desktop/student-attendance-tracker/raspberry_pi/scripts/startup.sh' > /etc/rc.local
+# Create .env file
+tee .env > /dev/null <<EOF
+API_KEY=$API_KEY
+EOF
+
+# Create the systemd service
+sudo tee /etc/systemd/system/student-attendance.service > /dev/null <<EOF
+[Unit]
+Description=Start Student Attendance Tracker
+After=network.target
+
+[Service]
+ExecStart=/home/student-attendance-tracker/raspberry_pi/scripts/startup.sh
+Restart=always
+User=$(whoami)
+WorkingDirectory=/home/student-attendance-tracker/raspberry_pi/scripts
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Reload systemd to pick up the new service
+sudo systemctl daemon-reload
+
+# Enable service to start at boot
+sudo systemctl enable student-attendance.service
+
+# Start the new service immediately
+sudo systemctl start student-attendance.service
 
 echo "Finished setting up student attendance tracker on this device!"
