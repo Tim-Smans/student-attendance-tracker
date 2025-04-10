@@ -23,14 +23,9 @@ then
 fi
 
 ROOM_NAME=$(./yq  '.room_name' $CONFIG_FILE)
-DEVICE_IDENTIFIER=$(./yq '.device_identifier' $CONFIG_FILE)
 API_KEY=$(./yq '.api_key' $CONFIG_FILE)
+DEVICE_IDENTIFIER=$(awk '/Serial/ {print $3}' /proc/cpuinfo)
 
-
-if [ -z "$DEVICE_IDENTIFIER" ]; then
-    echo "DEVICE_IDENTIFIER was not set, generating from CPU Serial..."
-    DEVICE_IDENTIFIER=$(awk '/Serial/ {print $3}' /proc/cpuinfo)
-fi
 
 sudo apt update
 sudo apt install libzbar0
@@ -41,5 +36,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 python3 scripts/setup.py $ROOM_NAME $DEVICE_IDENTIFIER $API_KEY
+
+echo '/home/Desktop/student-attendance-tracker/raspberry_pi/scripts/startup.sh' > /etc/rc.local
 
 echo "Finished setting up student attendance tracker on this device!"
