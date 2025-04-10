@@ -43,16 +43,18 @@ API_KEY=$API_KEY
 EOF
 
 # Create the systemd service
+USER_HOME="/home/$(whoami)"
+
 sudo tee /etc/systemd/system/student-attendance.service > /dev/null <<EOF
 [Unit]
 Description=Start Student Attendance Tracker
 After=network.target
 
 [Service]
-ExecStart=/home/student-attendance-tracker/raspberry_pi/scripts/startup.sh
+ExecStart=$USER_HOME/student-attendance-tracker/raspberry_pi/scripts/startup.sh
 Restart=always
 User=$(whoami)
-WorkingDirectory=/home/student-attendance-tracker/raspberry_pi/scripts
+WorkingDirectory=$USER_HOME/student-attendance-tracker/raspberry_pi/scripts
 Environment=PYTHONUNBUFFERED=1
 
 [Install]

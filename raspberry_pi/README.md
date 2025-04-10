@@ -5,7 +5,7 @@ This script allows you to easily set up a new device in the attendance system.
 
 ## ✅ Prerequisites
 
-Pull the latest version of this repository inside of the **home** directory of your device.
+Pull the latest version of this repository inside of the **home/{user}/** directory of your device.
 
 Before running the script, ensure the following dependencies are met:
 
