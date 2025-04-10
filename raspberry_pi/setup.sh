@@ -54,7 +54,7 @@ After=network.target
 ExecStart=$USER_HOME/student-attendance-tracker/raspberry_pi/scripts/startup.sh
 Restart=always
 User=$(whoami)
-WorkingDirectory=$USER_HOME/student-attendance-tracker/raspberry_pi/scripts
+WorkingDirectory=$USER_HOME/student-attendance-tracker/raspberry_pi
 Environment=PYTHONUNBUFFERED=1
 
 [Install]
