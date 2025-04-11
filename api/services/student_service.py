@@ -37,11 +37,11 @@ def update_student(student_id: str, newStudent: Student):
             if hasattr(og_student, key):
                 setattr(og_student, key, value)
                 
-    try:
-        session.commit()
-    except Exception as e:
-        session.rollback()
-        raise e    
+        try:
+            session.commit()
+        except Exception as e:
+            session.rollback()
+            raise e    
     else:
         raise NotFoundError("Student does not exist", 404)        
 
