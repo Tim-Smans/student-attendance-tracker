@@ -42,6 +42,8 @@ tee .env > /dev/null <<EOF
 API_KEY=$API_KEY
 EOF
 
+chmod +x /home/timsm/student-attendance-tracker/raspberry_pi/scripts/startup.sh
+
 # Create the systemd service
 USER_HOME="/home/$(whoami)"
 
