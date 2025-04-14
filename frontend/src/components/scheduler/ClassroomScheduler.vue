@@ -365,6 +365,11 @@ export default {
       },
     }
   },
+
+  /**
+   * Lifecycle hook called when the component is created.
+   * Initializes the component by fetching data for classrooms (devices), classgroups, and room devices.
+   */
   created() {
     this.fetchClassrooms()
     this.fetchClassgroups()
@@ -425,6 +430,16 @@ export default {
           }
       this.showSessionForm = true
     },
+    /**
+     * Save a session by either creating a new one or updating an existing one.
+     * If the sessionData has an id, it will be updated, otherwise a new session is created.
+     * @param {Object} sessionData - Session data to be saved, with the following properties:
+     *  - id: The id of the session to update, if null a new session is created
+     *  - startTime: The start time of the session
+     *  - endTime: The end time of the session
+     *  - classgroupId: The id of the classgroup
+     *  - roomDeviceId: The id of the room device
+     */
     async saveSession(sessionData) {
       if (sessionData.id) {
         // Update existing session

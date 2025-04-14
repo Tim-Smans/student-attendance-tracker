@@ -63,6 +63,13 @@ export const getClassgroupById = async (id: string): Promise<ClassGroup | null> 
   }
 }
 
+/**
+ * Retrieves a list of students from a specified class group.
+ *
+ * @param classGroupId - The ID of the class group.
+ * @returns A promise that resolves to an array of students belonging to the class group.
+ * @throws An error if the API request fails.
+ */
 export const getStudentsFromClassgroup = async (classGroupId: string): Promise<Student[]> => {
   try {
     let students: Student[] = []

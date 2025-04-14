@@ -228,6 +228,17 @@ export default {
     StatsCard,
     SearchBar,
   },
+  /**
+   * The main setup function for the classgroup overview component.
+   *
+   * It is responsible for:
+   * - Fetching all classgroups and their students
+   * - Fetching the total student count
+   * - Creating a computed property for filtering classgroups by search query
+   * - Creating a computed property for filtering students by search query
+   * - Creating a computed property for getting all unique degree programs
+   * - Creating a function for toggling the expansion of a classgroup
+   */
   setup() {
     const classgroups = ref([])
     const searchQuery = ref('')
