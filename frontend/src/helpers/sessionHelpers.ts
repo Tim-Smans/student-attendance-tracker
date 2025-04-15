@@ -31,6 +31,19 @@ export const getSessionsOfRoomDevice = async (device_id: string) => {
   }
 }
 
+export const getSessionsCount = async (): Promise<number> => {
+  try {
+    const { data } = await instance.get('/classsessions/');
+
+
+    return data.total;
+  } catch (error) {
+    console.error("API error:", error);
+    throw error;
+  }
+};
+
+
 
 
 export const createSession = async (session: SessionRequest) => {

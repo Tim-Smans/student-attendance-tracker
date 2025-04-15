@@ -56,10 +56,9 @@
             </div>
             <div class="ml-5 w-0 flex-1">
               <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">Active Sessions</dt>
+                <dt class="text-sm font-medium text-gray-500 truncate">Total Sessions</dt>
                 <dd class="flex items-baseline">
-                  <div class="text-2xl font-semibold text-gray-900">3</div>
-                  <span class="ml-2 text-sm font-medium text-green-600">Today</span>
+                  <div class="text-2xl font-semibold text-gray-900">{{ sessionsAmmount }}</div>
                 </dd>
               </dl>
             </div>
@@ -91,7 +90,7 @@
               <dl>
                 <dt class="text-sm font-medium text-gray-500 truncate">Total Students</dt>
                 <dd class="flex items-baseline">
-                  <div class="text-2xl font-semibold text-gray-900">248</div>
+                  <div class="text-2xl font-semibold text-gray-900">{{ studentsAmmount }}</div>
                 </dd>
               </dl>
             </div>
@@ -123,8 +122,8 @@
               <dl>
                 <dt class="text-sm font-medium text-gray-500 truncate">Avg. Attendance Rate</dt>
                 <dd class="flex items-baseline">
-                  <div class="text-2xl font-semibold text-gray-900">87%</div>
-                  <span class="ml-2 text-sm font-medium text-green-600">+2.3%</span>
+                  <div class="text-2xl font-semibold text-gray-900">N/A</div>
+                  <span class="ml-2 text-sm font-medium text-green-600">+N/A%</span>
                 </dd>
               </dl>
             </div>
@@ -139,6 +138,14 @@
 export default {
   props: {
     classgroupsAmmount: {
+      type: Number,
+      required: true,
+    },
+    sessionsAmmount: {
+      type: Number,
+      required: true,
+    },
+    studentsAmmount: {
       type: Number,
       required: true,
     },
