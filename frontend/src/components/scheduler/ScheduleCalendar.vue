@@ -41,7 +41,7 @@
       </div>
       <button
         @click="today"
-        class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+        class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
       >
         Today
       </button>
@@ -61,7 +61,7 @@
             v-for="(day, index) in daysOfWeek"
             :key="index"
             class="py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 bg-gray-50"
-            :class="{ 'bg-green-50': isToday(day.date) }"
+            :class="{ 'bg-orange-50': isToday(day.date) }"
           >
             <div>{{ day.name }}</div>
             <div class="text-sm text-gray-700">{{ formatDayDate(day.date) }}</div>
@@ -81,7 +81,7 @@
               v-for="(day, dayIndex) in daysOfWeek"
               :key="`${hour}-${dayIndex}`"
               class="relative py-2 border-r border-gray-200 h-16"
-              :class="{ 'bg-green-50': isToday(day.date) }"
+              :class="{ 'bg-orange-50': isToday(day.date) }"
             >
               <!-- Sessions that start in this time slot -->
               <div

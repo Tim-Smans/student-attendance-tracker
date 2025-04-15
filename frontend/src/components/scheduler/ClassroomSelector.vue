@@ -13,7 +13,7 @@
             <input
               type="text"
               v-model="searchQuery"
-              class="block w-full pr-10 sm:text-sm border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+              class="block w-full pr-10 sm:text-sm border-gray-300 rounded-md focus:ring-orange-500 focus:border-orange-500"
               placeholder="Search classrooms..."
             />
             <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -39,15 +39,15 @@
           <div
             v-for="classroom in filteredClassrooms"
             :key="classroom.id"
-            class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-green-500 cursor-pointer"
-            :class="{ 'ring-2 ring-green-500 ring-offset-2': isSelected(classroom) }"
+            class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-orange-500 cursor-pointer"
+            :class="{ 'ring-2 ring-orange-500 ring-offset-2': isSelected(classroom) }"
             @click="selectClassroom(classroom)"
           >
             <div class="flex-shrink-0">
-              <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+              <div class="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6 text-green-600"
+                  class="h-6 w-6 text-orange-600"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -73,7 +73,7 @@
             <div v-if="isSelected(classroom)" class="flex-shrink-0">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 text-green-500"
+                class="h-5 w-5 text-orange-500"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >

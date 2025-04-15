@@ -19,7 +19,7 @@
             <div
               class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md"
               :class="[
-                isDragOver ? 'border-green-500 bg-green-50' : 'border-gray-300',
+                isDragOver ? 'border-orange-500 bg-orange-50' : 'border-gray-300',
                 fileSelected ? 'bg-gray-50' : '',
               ]"
               @dragover.prevent="isDragOver = true"
@@ -45,7 +45,7 @@
                   <div class="flex text-sm text-gray-600">
                     <label
                       for="file-upload"
-                      class="relative cursor-pointer bg-white rounded-md font-medium text-green-600 hover:text-green-500 focus-within:outline-none"
+                      class="relative cursor-pointer bg-white rounded-md font-medium text-orange-600 hover:text-orange-500 focus-within:outline-none"
                     >
                       <span>Upload a file</span>
                       <input
@@ -67,7 +67,7 @@
                   <div class="flex items-center justify-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      class="h-8 w-8 text-green-500"
+                      class="h-8 w-8 text-orange-500"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -103,21 +103,21 @@
                 <div class="flex mb-2 items-center justify-between">
                   <div>
                     <span
-                      class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-green-600 bg-green-200"
+                      class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-orange-600 bg-orange-200"
                     >
                       Uploading file...
                     </span>
                   </div>
                   <div class="text-right">
-                    <span class="text-xs font-semibold inline-block text-green-600">
+                    <span class="text-xs font-semibold inline-block text-orange-600">
                       {{ uploadProgress }}%
                     </span>
                   </div>
                 </div>
-                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-green-200">
+                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-orange-200">
                   <div
                     :style="{ width: uploadProgress + '%' }"
-                    class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-green-500 transition-all duration-300"
+                    class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-orange-500 transition-all duration-300"
                   ></div>
                 </div>
               </div>
@@ -127,7 +127,7 @@
             <div class="mt-6">
               <button
                 type="button"
-                class="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 :disabled="!fileSelected || isUploading"
                 @click="uploadFile"
               >

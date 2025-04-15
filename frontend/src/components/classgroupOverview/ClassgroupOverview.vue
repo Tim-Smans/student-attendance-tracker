@@ -19,11 +19,11 @@
           <StatsCard
             title="Total Classgroups"
             :value="filteredClassgroups.length"
-            iconWrapperClass="bg-green-100 p-3 rounded-md"
+            iconWrapperClass="bg-orange-100 p-3 rounded-md"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6 text-green-600"
+              class="h-6 w-6 text-orange-600"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -96,7 +96,7 @@
               </div>
               <div class="flex items-center">
                 <span
-                  class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800 mr-3"
+                  class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-orange-100 text-orange-800 mr-3"
                 >
                   <div v-if="classgroup.students.length === 10">
                     {{ classgroup.students.length }}+ students

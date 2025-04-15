@@ -8,9 +8,10 @@ import ReadExcel from './components/ReadExcel.vue';
 import NewClassgroup from './components/newClassgroup/NewClassgroup.vue';
 import ClassroomScheduler from './components/scheduler/ClassroomScheduler.vue';
 import SessionAttendanceTracker from './components/sessionAttendance/SessionAttendanceTracker.vue';
+import HomePage from './components/home/HomePage.vue';
 
 const routes = [
-  { path: '/', component: ReadExcel },
+  { path: '/', component: HomePage },
   { path: '/classgroup', component: ClassgroupOverview },
   { path: '/classgroup/new', component: NewClassgroup },
   { path: '/schedule', component: ClassroomScheduler },

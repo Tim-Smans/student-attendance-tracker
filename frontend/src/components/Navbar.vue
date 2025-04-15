@@ -4,25 +4,25 @@
       <div class="flex justify-between h-16">
         <!-- Logo/Title -->
         <div class="flex items-center">
-          <router-link to="/" class="text-xl font-semibold text-green-600 hover:text-green-800">
+          <router-link to="/" class="text-xl font-semibold text-orange-600 hover:text-orange-800">
             Attendance Tracker
           </router-link>
         </div>
 
         <!-- Navigation Links -->
         <div class="flex items-center space-x-6">
-          <router-link to="/" class="text-gray-700 hover:text-green-600 text-sm font-medium" exact>
+          <router-link to="/" class="text-gray-700 hover:text-orange-600 text-sm font-medium" exact>
             Dashboard
           </router-link>
           <router-link
             to="/classgroup"
-            class="text-gray-700 hover:text-green-600 text-sm font-medium"
+            class="text-gray-700 hover:text-orange-600 text-sm font-medium"
           >
             Classgroups
           </router-link>
           <router-link
             to="/schedule"
-            class="text-gray-700 hover:text-green-600 text-sm font-medium"
+            class="text-gray-700 hover:text-orange-600 text-sm font-medium"
           >
             Scheduler
           </router-link>

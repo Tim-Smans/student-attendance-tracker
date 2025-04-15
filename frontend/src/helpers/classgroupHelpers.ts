@@ -46,6 +46,18 @@ export const getAllClassgroups = async (): Promise<ClassGroup[]> => {
   }
 };
 
+export const getClassgroupCount = async (): Promise<number> => {
+  try {
+    const { data } = await instance.get('/classgroups/');
+
+
+    return data.total;
+  } catch (error) {
+    console.error("API error:", error);
+    throw error;
+  }
+};
+
 export const getClassgroupById = async (id: string): Promise<ClassGroup | null> => {
   try {
     const { data } = await instance.get(`/classgroups/${id}`);

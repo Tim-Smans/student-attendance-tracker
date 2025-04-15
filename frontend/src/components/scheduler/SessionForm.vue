@@ -217,6 +217,22 @@ export default {
     this.initializeForm()
   },
   methods: {
+    /**
+     * Populate the form with data from the session if in edit mode, otherwise
+     * set default values.
+     *
+     * If in edit mode, the form is populated with the existing values from the
+     * session. If in create mode, the form is populated with default values.
+     * The default values are set to the current date and the current time rounded
+     * down to the nearest hour, with the end time set to one hour later.
+     *
+     * The form data is set to a new object with the following properties:
+     * - date: The date of the session in ISO format (YYYY-MM-DD)
+     * - startTime: The start time of the session in ISO format (HH:mm)
+     * - endTime: The end time of the session in ISO format (HH:mm)
+     * - classgroupId: The ID of the classgroup
+     * - roomDeviceId: The ID of the room device
+     */
     initializeForm() {
       if (this.session.id) {
         // Edit mode - populate form with existing data
