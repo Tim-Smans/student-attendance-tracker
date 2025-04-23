@@ -70,7 +70,7 @@ Description=Ping backend to report Pi status
 
 [Service]
 Type=oneshot
-ExecStart=$USER_HOME/.venv/bin/python $USER_HOME/student-attendance-tracker/raspberry_pi/scripts/ping_backend.py
+ExecStart=$USER_HOME/student-attendance-tracker/raspberry_pi/.venv/bin/python $USER_HOME/student-attendance-tracker/raspberry_pi/scripts/ping_backend.py
 User=$USER_NAME
 WorkingDirectory=$USER_HOME/student-attendance-tracker/raspberry_pi
 EOF
