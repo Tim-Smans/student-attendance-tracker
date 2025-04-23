@@ -10,6 +10,8 @@ PI_ID = get_device_identifier()  # unieke naam of UUID
 API_URL = "https://student-attendance-tracker-ungw.onrender.com/status/ping"
 
 try:
-    requests.post(API_URL, json={"id": PI_ID}, headers={"x-api-key": API_KEY})
+    resp = requests.post(API_URL, json={"id": PI_ID}, headers={"x-api-key": API_KEY})
+    print(resp.text)
+    print(resp.status_code)
 except Exception:
     pass
