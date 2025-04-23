@@ -68,6 +68,20 @@
                 <p class="text-sm text-gray-500 truncate">
                   Device Identifier: {{ classroom.deviceIdentifier }}
                 </p>
+                <p class="text-s text-gray-500 truncate">
+                  Scanner Status:
+                  <span
+                    :class="
+                      deviceStatuses[classroom.deviceIdentifier] === false
+                        ? 'text-red-500'
+                        : 'text-green-500'
+                    "
+                  >
+                    {{
+                      deviceStatuses[classroom.deviceIdentifier] === false ? 'Offline' : 'Online'
+                    }}
+                  </span>
+                </p>
               </a>
             </div>
             <div v-if="isSelected(classroom)" class="flex-shrink-0">
@@ -93,6 +107,7 @@
 
 <script>
 import { getSessionsOfRoomDevice } from '@/helpers/sessionHelpers'
+import { isDeviceOnline } from '@/helpers/statusHelpers'
 
 export default {
   props: {
@@ -108,6 +123,13 @@ export default {
   data() {
     return {
       searchQuery: '',
+      deviceStatuses: {},
+    }
+  },
+  async mounted() {
+    for (const classroom of this.classrooms) {
+      const online = await isDeviceOnline(classroom.deviceIdentifier)
+      this.deviceStatuses[classroom.deviceIdentifier] = online
     }
   },
   computed: {
@@ -140,6 +162,7 @@ export default {
         console.error('Could not retrieve rooms:', error)
       }
     },
+    isDeviceOnline,
   },
 }
 </script>
