@@ -20,7 +20,7 @@ async def ping(payload: PingSchema):
     return {"message": "pong"}
 
 
-@router.get("is_online/{pi_id}", dependencies=[Depends(verify_api_key)])
+@router.get("/is_online/{pi_id}", dependencies=[Depends(verify_api_key)])
 async def is_online(pi_id: str):
     last = last_seen.get(pi_id)
     if not last:
