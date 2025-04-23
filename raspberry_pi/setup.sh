@@ -73,7 +73,6 @@ sudo systemctl enable student-attendance.service
 sudo systemctl start student-attendance.service
 
 
-# Adding a cronjob to ping the backend every 1 minute
 # Add cronjob to send ping every minute
 CRON_CMD="/home/$(whoami)/.venv/bin/python /home/$(whoami)/student-attendance-tracker/raspberry_pi/scripts/ping_backend.py"
 CRON_JOB="* * * * * $CRON_CMD"

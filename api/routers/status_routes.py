@@ -16,7 +16,7 @@ last_seen: Dict[str, datetime] = {}
 
 @router.post("/ping", dependencies=[Depends(verify_api_key)])
 async def ping(payload: PingSchema):
-    last_seen = [payload.id] = datetime.now()
+    last_seen[payload.id] = datetime.now()
     return {"message": "pong"}
 
 
