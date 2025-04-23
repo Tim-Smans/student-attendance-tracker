@@ -63,21 +63,39 @@ Environment=PYTHONUNBUFFERED=1
 WantedBy=multi-user.target
 EOF
 
-# Reload systemd to pick up the new service
+# Create ping systemd service
+sudo tee /etc/systemd/system/pi-pinger.service > /dev/null <<EOF
+[Unit]
+Description=Ping backend to report Pi status
+
+[Service]
+Type=oneshot
+ExecStart=$USER_HOME/.venv/bin/python $USER_HOME/student-attendance-tracker/raspberry_pi/scripts/ping_backend.py
+User=$USER_NAME
+WorkingDirectory=$USER_HOME/student-attendance-tracker/raspberry_pi
+EOF
+
+# Create ping systemd timer (runs every minute)
+sudo tee /etc/systemd/system/pi-pinger.timer > /dev/null <<EOF
+[Unit]
+Description=Run Pi Pinger every minute
+
+[Timer]
+OnBootSec=30s
+OnUnitActiveSec=60s
+Unit=pi-pinger.service
+
+[Install]
+WantedBy=timers.target
+EOF
+
+# Reload systemd and enable services
 sudo systemctl daemon-reload
-
-# Enable service to start at boot
 sudo systemctl enable student-attendance.service
-
-# Start the new service immediately
 sudo systemctl start student-attendance.service
 
+sudo systemctl enable pi-pinger.timer
+sudo systemctl start pi-pinger.timer
 
-# Add cronjob to send ping every minute
-CRON_CMD="/home/$(whoami)/.venv/bin/python /home/$(whoami)/student-attendance-tracker/raspberry_pi/scripts/ping_backend.py"
-CRON_JOB="* * * * * $CRON_CMD"
-
-# Check if it's already there
-(crontab -l 2>/dev/null | grep -Fv "$CRON_CMD" ; echo "$CRON_JOB") | crontab -
 
 echo "Finished setting up student attendance tracker on this device!"
