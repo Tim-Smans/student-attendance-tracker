@@ -1,1 +1,5 @@
 @import 'tailwindcss';
+
+.highlight::selection {
+  color: #ffedd4;
+}

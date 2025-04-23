@@ -3,7 +3,7 @@ import MyFooter from './components/MyFooter.vue'
 import Navbar from './components/Navbar.vue'
 </script>
 
-<template class="bg-red">
+<template class="highlight">
   <Navbar />
   <router-view />
   <MyFooter />
