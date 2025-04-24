@@ -1,4 +1,9 @@
 # Do not use spaces in the values in this file
 
-room_name: "EDIT_ME!"
+# This is an example of a room name, 
+# change this to the room you are setting up
+room_name: "C3.32"
+
+# Please make sure to replace the API key with your own,
+# Otherwise it will not work.
 api_key: "api_key_here"

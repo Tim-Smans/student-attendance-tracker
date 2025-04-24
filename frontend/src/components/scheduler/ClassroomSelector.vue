@@ -126,11 +126,18 @@ export default {
       deviceStatuses: {},
     }
   },
-  async mounted() {
-    for (const classroom of this.classrooms) {
-      const online = await isDeviceOnline(classroom.deviceIdentifier)
-      this.deviceStatuses[classroom.deviceIdentifier] = online
-    }
+  watch: {
+    classrooms: {
+      handler(newVal) {
+        if (!newVal || newVal.length === 0) return
+
+        newVal.forEach(async (classroom) => {
+          const online = await isDeviceOnline(classroom.deviceIdentifier)
+          this.deviceStatuses[classroom.deviceIdentifier] = online
+        })
+      },
+      immediate: true,
+    },
   },
   computed: {
     filteredClassrooms() {
