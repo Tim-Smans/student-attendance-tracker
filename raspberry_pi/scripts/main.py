@@ -4,10 +4,20 @@ import re
 import numpy as np
 import time
 import os
+import yaml
 
 from scripts.utils.scanning_utils import extract_ids, preprocess
 from scripts.api.attendance import add_attendance
 from scripts.api.session import get_active_session, is_active_session
+
+
+with open("./config.yaml", "r") as f:
+    config = yaml.safe_load(f)
+
+student_id_length = config["student_id_length"]
+
+if student_id_length == None:
+    student_id_length = 7
 
 
 print("Started scanning for blue...")
@@ -62,7 +72,7 @@ while True:
         print(raw_text.strip())
 
         # ID extraction
-        student_id, peppi_id = extract_ids(raw_text)
+        student_id, peppi_id = extract_ids(raw_text, student_id_length)
 
         print("\nResult:")
         if student_id:

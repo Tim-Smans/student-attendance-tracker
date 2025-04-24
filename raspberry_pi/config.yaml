@@ -7,3 +7,7 @@ room_name: "C3.32"
 # Please make sure to replace the API key with your own,
 # Otherwise it will not work.
 api_key: "api_key_here"
+
+# This is the number of digits of the student id 
+# on the digital student cards.
+student_id_length: 7

@@ -23,7 +23,7 @@ def preprocess(image):
     _, processed = cv2.threshold(blurred, 130, 255, cv2.THRESH_BINARY)
     return processed
 
-def extract_ids(text):
+def extract_ids(text: str, id_length: int):
     """
     Extracts the student ID and Peppi ID from the given text.
 
@@ -33,13 +33,13 @@ def extract_ids(text):
     :param text: The text to extract the IDs from
     :return: A tuple containing the student ID and Peppi ID, or None if either ID could not be found
     """
-
-    numbers = re.findall(r'\b\d{6,7}\b', text)
+    pattern = rf'\b\d{{6,{id_length}}}\b'
+    numbers = re.findall(pattern, text)
     student_id = None
     peppi_id = None
 
     for num in numbers:
-        if len(num) == 7 and not student_id:
+        if len(num) == id_length and not student_id:
             student_id = num
         elif len(num) == 6 and not peppi_id:
             peppi_id = num
