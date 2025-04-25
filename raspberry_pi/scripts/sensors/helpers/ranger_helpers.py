@@ -1,6 +1,5 @@
 import RPi.GPIO as GPIO
 import time
-from helpers.lcd_helpers import setText
 
 class UltrasonicRanger:
     def __init__(self, trig_echo):
