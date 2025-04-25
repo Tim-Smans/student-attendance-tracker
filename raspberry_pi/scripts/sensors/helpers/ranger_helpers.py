@@ -37,8 +37,6 @@ class UltrasonicRanger:
         distance = round(pulse_duration * 34300 / 2, 2)
         print(f"Distance: {distance} cm")
 
-        setText(f"Distance: {distance} cm")
-
         # Put the
         GPIO.setup(self.trig_echo, GPIO.OUT)
         GPIO.output(self.trig_echo, False)
