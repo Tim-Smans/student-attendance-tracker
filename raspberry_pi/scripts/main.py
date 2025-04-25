@@ -9,7 +9,10 @@ import yaml
 from scripts.utils.scanning_utils import extract_ids, preprocess
 from scripts.api.attendance import add_attendance
 from scripts.api.session import get_active_session, is_active_session
-
+from scripts.sensors.helpers.lcd_helpers import LCDScreen
+from scripts.sensors.helpers.led_helpers import RGBLED
+from scripts.sensors.helpers.pir_motion_helpers import PirMotionDetector
+from scripts.sensors.helpers.ranger_helpers import UltrasonicRanger
 
 with open("./config.yaml", "r") as f:
     config = yaml.safe_load(f)
@@ -19,15 +22,36 @@ student_id_length = config["student_id_length"]
 if student_id_length == None:
     student_id_length = 7
 
+# Defining peripherals, sensors and pin layout
+lcd_screen = LCDScreen()
+rgb_led = RGBLED(red_pin=23, green_pin=24, blue_pin=25)
+pir_motion_detector = PirMotionDetector(pir_pin=17)
+ultrasonic_ranger = UltrasonicRanger(trig_echo=26)
 
-print("Started scanning for blue...")
+print("Started scanning...")
 
 # Main loop
 while True:
-
     if not is_active_session():
         print("No active session. Waiting 10 seconds...")
         time.sleep(10)
+        continue
+
+    motion_detected = pir_motion_detector.detected_movement()
+    
+    if not motion_detected:
+        print("No motion detected. Waiting 5 seconds...")
+        lcd_screen.set_text_norefresh("No motion detected.")
+        time.sleep(5)
+        continue
+
+    phone_range = ultrasonic_ranger.measure_distance()
+    print(f"Phone range: {phone_range} cm")
+
+    if(phone_range > 15):
+        print("Phone too far away. Waiting 5 seconds...")
+        lcd_screen.set_text_norefresh("Please hold your\nphone closer")
+        time.sleep(5)
         continue
 
     timestamp = int(time.time())
@@ -50,43 +74,35 @@ while True:
     upper_blue = np.array([140, 255, 255])
     mask = cv2.inRange(hsv, lower_blue, upper_blue)
 
-    blue_pixels = cv2.countNonZero(mask)
-    total_pixels = mask.shape[0] * mask.shape[1]
-    blue_ratio = blue_pixels / total_pixels
+    # Preprocessing
+    processed = preprocess(image)
+    processed_filename = f"preprocessed.png"
+    cv2.imwrite(processed_filename, processed)
 
-    print(f"Blue detected: {blue_ratio:.2%}")
+    # OCR
+    custom_config = r'--oem 3 --psm 6'
+    raw_text = pytesseract.image_to_string(processed, config=custom_config)
 
-    if blue_ratio > 0.2:
-        print(f"Enough blue, scanning...")
+    print("Scanned text:")
+    print(raw_text.strip())
 
-        # Preprocessing
-        processed = preprocess(image)
-        processed_filename = f"preprocessed.png"
-        cv2.imwrite(processed_filename, processed)
+    # ID extraction
+    student_id, peppi_id = extract_ids(raw_text, student_id_length)
 
-        # OCR
-        custom_config = r'--oem 3 --psm 6'
-        raw_text = pytesseract.image_to_string(processed, config=custom_config)
-
-        print("Scanned text:")
-        print(raw_text.strip())
-
-        # ID extraction
-        student_id, peppi_id = extract_ids(raw_text, student_id_length)
-
-        print("\nResult:")
-        if student_id:
-            print(f"Student ID: {student_id}")
-            session = get_active_session()
-            print("Active session:", f"{session}")
-            response = add_attendance(student_id, session["id"])
-        else:
-            print("No Student ID found.")
-
-        # Wait before scanning again
-        time.sleep(3)
-
+    print("\nResult:")
+    if student_id:
+        print(f"Student ID: {student_id}")
+        session = get_active_session()
+        print("Active session:", f"{session}")
+        response = add_attendance(student_id, session["id"])
+        # Turn the LED green if the student is in the session
+        rgb_led.green()
     else:
-        # Wait before scanning again
-        time.sleep(0.5)
+        # Turn the LED red if the student id is not found in the image.
+        rgb_led.red()
+        print("No Student ID found.")
+
+    # Wait before scanning again
+    time.sleep(3)
+
 

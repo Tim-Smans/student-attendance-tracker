@@ -28,7 +28,9 @@ DEVICE_IDENTIFIER=$(awk '/Serial/ {print $3}' /proc/cpuinfo)
 
 
 sudo apt update
-sudo apt install libzbar0 tesseract-ocr
+sudo apt install libzbar0 tesseract-ocr python3-smbus
+
+sudo sed -i '$ai2c_arm=on' /boot/config.txt
 
 python3 -m venv .venv --system-site-packages
 source .venv/bin/activate
