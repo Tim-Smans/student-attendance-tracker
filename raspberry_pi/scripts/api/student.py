@@ -63,7 +63,7 @@ def get_student_by_id(student_id: str):
     response = get(f"students/{student_id}")
     students = response.json()
     
-    if students:
+    if response.status_code == 200:
         return students[0]
     else:
         return None
