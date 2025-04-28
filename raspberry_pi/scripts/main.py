@@ -53,6 +53,7 @@ while True:
         time.sleep(5)
         continue
 
+    lcd_screen.set_text("Scanning...\nPlease hold still")
     timestamp = int(time.time())
     filename = f"snapshot.jpg"
     
@@ -65,7 +66,7 @@ while True:
         print("Error: Could not load.")
         continue
 
-    # Highten speed: resize picture for blue detection
+    # Highten speed: resize picture
     small = cv2.resize(image, (320, 240))
     hsv = cv2.cvtColor(small, cv2.COLOR_BGR2HSV)
 
