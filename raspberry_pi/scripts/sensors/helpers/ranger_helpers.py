@@ -35,7 +35,6 @@ class UltrasonicRanger:
         # Calculating the distance based on the duration of the pulse.
         pulse_duration = pulse_end - pulse_start
         distance = round(pulse_duration * 34300 / 2, 2)
-        print(f"Distance: {distance} cm")
 
         # Put the
         GPIO.setup(self.trig_echo, GPIO.OUT)

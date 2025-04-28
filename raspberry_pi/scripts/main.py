@@ -39,10 +39,10 @@ while True:
 
     motion_detected = pir_motion_detector.detected_movement()
     
+    print("Waiting for motion to be detected before scanning...")
     if not motion_detected:
-        print("No motion detected. Waiting 5 seconds...")
-        lcd_screen.set_text_norefresh("No motion detected.")
-        time.sleep(5)
+        lcd_screen.set_text("No motion detected.")
+        time.sleep(0.5)
         continue
 
     phone_range = ultrasonic_ranger.measure_distance()
@@ -50,7 +50,7 @@ while True:
 
     if(phone_range > 15):
         print("Phone too far away. Waiting 5 seconds...")
-        lcd_screen.set_text_norefresh("Please hold your\nphone closer")
+        lcd_screen.set_text("Please hold your\nphone closer")
         time.sleep(5)
         continue
 
