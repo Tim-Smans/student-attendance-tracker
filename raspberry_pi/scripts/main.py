@@ -42,6 +42,7 @@ if ultrasonic_ranger.measure_distance() is None:
 while True:
     if not is_active_session():
         print("No active session. Waiting 10 seconds...")
+        lcd_screen.set_text_norefresh("No session...")
         time.sleep(10)
         continue
 

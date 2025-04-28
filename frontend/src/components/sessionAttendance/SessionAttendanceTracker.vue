@@ -83,7 +83,7 @@
         <SessionInfoHeader :session="session" :classgroup="classgroup" :classroom="classroom" />
 
         <!-- Attendance Summary -->
-        <AttendanceSummary :absent="absent" :present="present" class="mt-6" />
+        <AttendanceSummary :absent="absent" :present="present" :session="session" class="mt-6" />
 
         <!-- Attendance Controls -->
         <div class="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">

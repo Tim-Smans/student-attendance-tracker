@@ -1,7 +1,10 @@
 import type { ClassGroup } from '@/models/classGroup';
 import type { Student } from '@/models/student';
 import { read, utils } from "xlsx";
+import * as ExcelJS from "exceljs"
 import { v4 as uuidv4 } from 'uuid';
+import type { FullClassSession } from '@/models/fullClassSession';
+import { getStudentsFromClassgroup } from './classgroupHelpers';
 
 /**
  * Maps an Excel row to a Student object.
@@ -64,3 +67,58 @@ export const readExcelFile = async (file: File): Promise<ClassGroup> => {
 
   return classGroup;
 };
+
+
+export const createSessionSheet = async (session: FullClassSession) => {
+
+  console.log(session)
+
+  const students = await getStudentsFromClassgroup(session.classgroupId)
+
+  const attendedStudentIds = new Set(
+    session.attendances
+      .filter(x => x.classSessionId === session.id)
+      .map(x => x.studentId)
+  );
+
+
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Attendance');
+  worksheet.addRow([`Session from: ${session.startTime} to ${session.endTime}`])
+  worksheet.addRow([`Classgroup: ${session.classgroup.name}`])
+  worksheet.addRow([''])
+
+  // Voeg headers toe
+  worksheet.addRow(['Student number', 'Last name', 'First name', 'Email', 'Degree programme', 'Attendance']);
+
+  // Voeg studenten toe
+  students.forEach(x => {
+    const row = worksheet.addRow([
+      x.studentNumber,
+      x.lastName,
+      x.firstName,
+      x.email,
+      x.degreeProgramme,
+      attendedStudentIds.has(x.studentNumber) ? 'Attended' : 'Absent'
+    ]);
+
+    if (attendedStudentIds.has(x.studentNumber)) {
+      row.eachCell(cell => {
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFCCFFCC' } // Licht green
+        };
+      });
+    }
+  });
+
+  // Write the file to download in browser
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'attendance.xlsx';
+  link.click();
+}

@@ -16,6 +16,18 @@
 
         <!-- Absent -->
         <SummaryCard color="red" title="Absent" :count="absent" :percentage="absentPercentage" />
+
+        <div :class="`bg-white overflow-hidden shadow rounded-lg`">
+          <div class="px-4 py-5 sm:p-6">
+            <div class="flex items-center">
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <button @click="downloadSessionExcel" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Convert session to Excel</button>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Progress Bar -->
@@ -46,6 +58,7 @@
 </template>
 
 <script>
+import { createSessionSheet } from '@/helpers/excelHelpers'
 import SummaryCard from './SummaryCard.vue'
 
 export default {
@@ -61,6 +74,10 @@ export default {
       type: Number,
       required: true,
     },
+    session: {
+      type: Object,
+      required: true,
+    }
   },
   computed: {
     total() {
@@ -73,5 +90,10 @@ export default {
       return this.total ? Math.round((this.absent / this.total) * 100) : 0
     },
   },
+  methods: {
+    downloadSessionExcel() {
+      createSessionSheet(this.session)
+    }
+  }
 }
 </script>
