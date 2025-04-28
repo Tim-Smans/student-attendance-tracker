@@ -60,7 +60,7 @@ def is_student_in_session(student_id):
 
 
 def get_student_by_id(student_id: str):
-    response = get(f"student/{student_id}")
+    response = get(f"students/{student_id}")
     students = response.json()
     
     if students:
