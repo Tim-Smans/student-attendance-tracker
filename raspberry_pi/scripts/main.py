@@ -126,5 +126,6 @@ while True:
 
     # Wait before scanning again
     time.sleep(3)
+    lcd_screen.clear()
 
 
