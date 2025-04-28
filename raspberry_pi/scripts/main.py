@@ -39,9 +39,8 @@ while True:
 
     motion_detected = pir_motion_detector.detected_movement()
     
-    print("Waiting for motion to be detected before scanning...")
     if not motion_detected:
-        lcd_screen.set_text("No motion detected.")
+        lcd_screen.set_text_norefresh("No motion detected.")
         time.sleep(0.5)
         continue
 
