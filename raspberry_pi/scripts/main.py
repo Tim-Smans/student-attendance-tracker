@@ -48,7 +48,7 @@ while True:
         time.sleep(10)
         continue
 
-    if not pir_motion_detector.is_plugged_in():
+    if pir_motion_detector.is_plugged_in():
         motion_detected = pir_motion_detector.detected_movement()
         
         if not motion_detected:
