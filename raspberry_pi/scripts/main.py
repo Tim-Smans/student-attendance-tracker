@@ -6,14 +6,13 @@ import time
 import os
 import yaml
 
-from scripts.utils.scanning_utils import extract_ids, preprocess
+from scripts.utils.scanning_utils import extract_ids, preprocess, warn_message
 from scripts.api.attendance import add_attendance
 from scripts.api.session import get_active_session, is_active_session
 from scripts.sensors.helpers.lcd_helpers import LCDScreen
 from scripts.sensors.helpers.led_helpers import RGBLED
 from scripts.sensors.helpers.pir_motion_helpers import PirMotionDetector
 from scripts.sensors.helpers.ranger_helpers import UltrasonicRanger
-from warnings import warn
 
 with open("./config.yaml", "r") as f:
     config = yaml.safe_load(f)
@@ -32,7 +31,7 @@ ultrasonic_ranger = UltrasonicRanger(trig_echo=26)
 print("Started scanning...")
 
 if lcd_screen.safe_write_byte_data(0x3e, 0x40, ord('c')) is False:
-    warn("!!! LCD is currently not connected or broken, continueing scanning...")
+    warn_message("!!! LCD is currently not connected or broken, continueing scanning...")
 
 # Main loop
 while True:

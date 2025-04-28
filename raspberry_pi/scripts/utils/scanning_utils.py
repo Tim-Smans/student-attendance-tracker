@@ -44,3 +44,8 @@ def extract_ids(text: str, id_length: int):
         elif len(num) == 6 and not peppi_id:
             peppi_id = num
     return student_id, peppi_id
+
+def warn_message(message):
+    YELLOW = "\033[93m"
+    RESET = "\033[0m"
+    print(f"{YELLOW}[Warn]: {message}{RESET}")
