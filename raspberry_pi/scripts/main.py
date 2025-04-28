@@ -56,6 +56,7 @@ while True:
             time.sleep(0.5)
             continue
 
+    print('passed pir check')
     phone_range = ultrasonic_ranger.measure_distance()
     print(f"Phone range: {phone_range} cm")
 
