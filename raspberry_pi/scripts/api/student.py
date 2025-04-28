@@ -57,3 +57,13 @@ def is_student_in_session(student_id):
             return True
 
     return False
+
+
+def get_student_by_id(student_id: str):
+    response = get(f"student/{student_id}")
+    students = response.json()
+    
+    if students:
+        return students[0]
+    else:
+        return None

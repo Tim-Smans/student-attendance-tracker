@@ -6,6 +6,7 @@ import time
 import os
 import yaml
 
+from scripts.api.student import get_student_by_id
 from scripts.utils.scanning_utils import extract_ids, preprocess, warn_message
 from scripts.api.attendance import add_attendance
 from scripts.api.session import get_active_session, is_active_session
@@ -49,7 +50,7 @@ while True:
     motion_detected = pir_motion_detector.detected_movement()
     
     if not motion_detected:
-        lcd_screen.set_text_norefresh("No motion detected.")
+        lcd_screen.set_text_norefresh("No motion\ndetected.")
         time.sleep(0.5)
         continue
 
@@ -105,8 +106,17 @@ while True:
         session = get_active_session()
         print("Active session:", f"{session}")
         response = add_attendance(student_id, session["id"])
-        # Turn the LED green if the student is in the session
-        rgb_led.green()
+        student = get_student_by_id(student_id=student_id)
+
+        if(student is None):
+            lcd_screen.set_text(f"Student not in\nthis session")
+            rgb_led.red()
+            time.sleep(3)
+        else:
+            lcd_screen.set_text(f"Scanned, Welcome\n{student['firstname']}")
+            # Turn the LED green if the student is in the session
+            rgb_led.green()
+
     else:
         # Turn the LED red if the student id is not found in the image.
         rgb_led.red()
@@ -114,5 +124,6 @@ while True:
 
     # Wait before scanning again
     time.sleep(3)
+    rgb_led.white()
 
 
