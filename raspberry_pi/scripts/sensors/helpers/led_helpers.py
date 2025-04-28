@@ -32,8 +32,10 @@ class RGBLED:
             self.safe_output(self.red_pin, GPIO.HIGH)
             self.safe_output(self.green_pin, GPIO.HIGH)
             self.safe_output(self.blue_pin, GPIO.HIGH)
+            print('pir plugged in')
             return True
         except (RuntimeError, OSError) as e:
+            print('pir plugged out')
             return False
 
 
