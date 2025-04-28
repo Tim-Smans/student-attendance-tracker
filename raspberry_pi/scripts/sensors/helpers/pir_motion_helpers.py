@@ -7,7 +7,7 @@ class PirMotionDetector:
     self.pir_pin = pir_pin
 
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(self.pir_pin, GPIO.IN)
+    GPIO.setup(self.pir_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
   def detected_movement(self) -> bool:
       if GPIO.input(self.pir_pin):
@@ -17,14 +17,11 @@ class PirMotionDetector:
       return False
 
   def is_plugged_in(self) -> bool:
-    try: 
-      if(GPIO.input(self.pir_pin)):
-          print('Pir plugged in')
-          return True
-      print('Pir plugged in')
-      return True 
-    except (RuntimeError, OSError) as e:
-      print('Pir not plugged in')
-      return False 
+      timeout = time.time() + 2 
+      while time.time() < timeout:
+          if GPIO.input(self.pir_pin):
+              return True
+          time.sleep(0.05)
+      return False
 
 
