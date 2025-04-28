@@ -1,27 +1,24 @@
+
 <template>
   <div
-    class="fixed z-10 inset-0 overflow-y-auto"
+    class="fixed inset-0 z-10 overflow-y-auto"
     aria-labelledby="modal-title"
     role="dialog"
     aria-modal="true"
   >
-    <div
-      class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
-    >
+    <div class="flex items-center justify-center min-h-screen px-4 text-center relative">
+      <!-- Overlay -->
+      <div class="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+      <!-- Modal content -->
+      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
       <div
-        class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-        aria-hidden="true"
-      ></div>
-      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true"
-        >&#8203;</span
+        class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 relative"
       >
-      <div
-        class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6"
-      >
-        <div>
-          <div class="mt-3 text-center sm:mt-0 sm:text-left">
+      <div class="mt-3 text-center sm:mt-0 sm:text-left">
             <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-              {{ session.id ? 'Edit Session' : 'Add New Session' }}
+              {{ session?.id ? 'Edit Session' : 'Add New Session' }}
             </h3>
             <div class="mt-2">
               <p class="text-sm text-gray-500">
@@ -33,8 +30,6 @@
               </p>
             </div>
           </div>
-        </div>
-
         <form @submit.prevent="saveSession" class="mt-5 space-y-6">
           <!-- Date -->
           <div>
@@ -174,6 +169,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 export default {
