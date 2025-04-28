@@ -26,14 +26,14 @@ class RGBLED:
 
 
     def turn_off(self):     
-        self.safe_output(self.red_pin, GPIO.HIGH)
-        self.safe_output(self.green_pin, GPIO.HIGH)
-        self.safe_output(self.blue_pin, GPIO.HIGH)
-
-    def white(self):
         self.safe_output(self.red_pin, GPIO.LOW)
         self.safe_output(self.green_pin, GPIO.LOW)
         self.safe_output(self.blue_pin, GPIO.LOW)
+
+    def white(self):
+        self.safe_output(self.red_pin, GPIO.HIGH)
+        self.safe_output(self.green_pin, GPIO.HIGH)
+        self.safe_output(self.blue_pin, GPIO.HIGH)
 
     def red(self):
         self.safe_output(self.red_pin, GPIO.HIGH)
@@ -46,9 +46,9 @@ class RGBLED:
         self.safe_output(self.blue_pin, GPIO.LOW)
 
     def blue(self):
-        self.safe_output(self.red_pin, GPIO.HIGH)
-        self.safe_output(self.green_pin, GPIO.HIGH)
-        self.safe_output(self.blue_pin, GPIO.LOW)
+        self.safe_output(self.red_pin, GPIO.LOW)
+        self.safe_output(self.green_pin, GPIO.LOW)
+        self.safe_output(self.blue_pin, GPIO.HIGH)
 
     def yellow(self):
         self.safe_output(self.red_pin, GPIO.LOW)

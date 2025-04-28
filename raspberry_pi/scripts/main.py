@@ -46,6 +46,8 @@ while True:
         lcd_screen.set_text_norefresh("No session...")
         time.sleep(10)
         continue
+    
+    rgb_led.white()
 
     motion_detected = pir_motion_detector.detected_movement()
     
@@ -124,6 +126,5 @@ while True:
 
     # Wait before scanning again
     time.sleep(3)
-    rgb_led.white()
 
 
