@@ -38,8 +38,11 @@ class LCDScreen:
                 if c == '\n':
                     continue
             count += 1
-            self.bus.write_byte_data(self.DISPLAY_TEXT_ADDR, 0x40, ord(c))
 
+            if not self.safe_write_byte_data(self.DISPLAY_TEXT_ADDR, 0x40, ord(c)):
+                print("LCD not connected!")
+                break
+            
     def set_text_norefresh(self, text):
         self.text_cmd(0x02)  # Return home
         sleep(.05)
@@ -61,10 +64,14 @@ class LCDScreen:
                 if c == '\n':
                     continue
             count += 1
-            self.bus.write_byte_data(self.DISPLAY_TEXT_ADDR, 0x40, ord(c))
+
+            if not self.safe_write_byte_data(self.DISPLAY_TEXT_ADDR, 0x40, ord(c)):
+                print("LCD not connected!")
+                break
 
     def text_cmd(self, cmd):
-        self.bus.write_byte_data(self.DISPLAY_TEXT_ADDR, 0x80, cmd)
+        if not self.safe_write_byte_data(self.DISPLAY_TEXT_ADDR, 0x80, cmd):
+            print("LCD not connected!")
 
     def set_cursor(self, row):
         addr = 0x80 if row == 0 else 0xC0
@@ -76,15 +83,24 @@ class LCDScreen:
 
     def write(self, text):
         for c in text:
-            self.bus.write_byte_data(self.DISPLAY_TEXT_ADDR, 0x40, ord(c))
-
+            if not self.safe_write_byte_data(self.DISPLAY_TEXT_ADDR, 0x40, ord(c)):
+                print("LCD not connected!")
+                break
+            
     def scroll_line(self, line, message, delay=0.3):
+        
         padding = " " * 16
+        
         message = padding + message + padding
         for i in range(len(message) - 15):
             self.set_cursor(line)
             self.write(message[i:i+16])
             sleep(delay)
 
-
+    def safe_write_byte_data(self, addr, cmd, val):
+        try:
+            self.bus.write_byte_data(addr, cmd, val)
+            return True
+        except (OSError, IOError):
+            return False
 
