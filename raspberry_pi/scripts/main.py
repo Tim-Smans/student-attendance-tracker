@@ -31,7 +31,7 @@ ultrasonic_ranger = UltrasonicRanger(trig_echo=26)
 
 print("Started scanning...")
 
-if lcd_screen.safe_write_byte_data('0x3e', 0x40, None) is False:
+if lcd_screen.safe_write_byte_data(0x3e, 0x40, None) is False:
     warn("!!! LCD is currently not connected or broken, continueing scanning...")
 
 # Main loop
