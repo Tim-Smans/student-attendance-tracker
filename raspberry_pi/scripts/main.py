@@ -39,9 +39,6 @@ if ultrasonic_ranger.measure_distance() is None:
 if not pir_motion_detector.is_plugged_in():
     warn_message("!!! Pir Motion Detector is currently not connected or broken.")
 
-if not rgb_led.is_plugged_in():
-    warn_message("!!! RBG LED is currently not connected or broken.")
-
 
 
 # Main loop

@@ -20,23 +20,9 @@ class RGBLED:
 
     def safe_output(self, pin, state):
         try:
-            if  not self.is_plugged_in():
-                return 
-            
             GPIO.output(pin, state)
         except (RuntimeError, OSError) as e:
             self.warn_message(f"Failed to set pin {pin} to {state}: {e}")
-
-    def is_plugged_in(self):
-        try:
-            self.safe_output(self.red_pin, GPIO.HIGH)
-            self.safe_output(self.green_pin, GPIO.HIGH)
-            self.safe_output(self.blue_pin, GPIO.HIGH)
-            print('pir plugged in')
-            return True
-        except (RuntimeError, OSError) as e:
-            print('pir plugged out')
-            return False
 
 
     def turn_off(self):     
