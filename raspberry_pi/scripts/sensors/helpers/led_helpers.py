@@ -1,55 +1,78 @@
 import RPi.GPIO as GPIO
 import time
 
-
 class RGBLED:
-  def __init__(self, red_pin, green_pin, blue_pin):
-      self.red_pin = red_pin
-      self.green_pin = green_pin
-      self.blue_pin = blue_pin
+    def __init__(self, red_pin, green_pin, blue_pin):
+        self.red_pin = red_pin
+        self.green_pin = green_pin
+        self.blue_pin = blue_pin
 
-      GPIO.setmode(GPIO.BCM)
+        GPIO.setmode(GPIO.BCM)
 
-      GPIO.setup(red_pin, GPIO.OUT)
-      GPIO.setup(green_pin, GPIO.OUT)
-      GPIO.setup(blue_pin, GPIO.OUT)
+        GPIO.setup(red_pin, GPIO.OUT)
+        GPIO.setup(green_pin, GPIO.OUT)
+        GPIO.setup(blue_pin, GPIO.OUT)
 
-  def turn_off(self):
-      GPIO.output(self.red_pin,GPIO.HIGH)
-      GPIO.output(self.green_pin,GPIO.HIGH)
-      GPIO.output(self.blue_pin,GPIO.HIGH)
-      
-  def white(self):
-      GPIO.output(self.red_pin,GPIO.LOW)
-      GPIO.output(self.green_pin,GPIO.LOW)
-      GPIO.output(self.blue_pin,GPIO.LOW)
-      
-  def red(self):
-      GPIO.output(self.red_pin,GPIO.LOW)
-      GPIO.output(self.green_pin,GPIO.HIGH)
-      GPIO.output(self.blue_pin,GPIO.HIGH)
+    def warn_message(self, message):
+        YELLOW = "\033[93m"
+        RESET = "\033[0m"
+        print(f"{YELLOW}[Warn]: {message}{RESET}")
 
-  def green(self):
-      GPIO.output(self.red_pin,GPIO.HIGH)
-      GPIO.output(self.green_pin,GPIO.LOW)
-      GPIO.output(self.blue_pin,GPIO.HIGH)
-      
-  def blue(self):
-      GPIO.output(self.red_pin,GPIO.HIGH)
-      GPIO.output(self.green_pin,GPIO.HIGH)
-      GPIO.output(self.blue_pin,GPIO.LOW)
-      
-  def yellow(self):
-      GPIO.output(self.red_pin,GPIO.LOW)
-      GPIO.output(self.green_pin,GPIO.LOW)
-      GPIO.output(self.blue_pin,GPIO.HIGH)
-      
-  def purple(self):
-      GPIO.output(self.red_pin,GPIO.LOW)
-      GPIO.output(self.green_pin,GPIO.HIGH)
-      GPIO.output(self.blue_pin,GPIO.LOW)
-      
-  def lightBlue(self):
-      GPIO.output(self.red_pin,GPIO.HIGH)
-      GPIO.output(self.green_pin,GPIO.LOW)
-      GPIO.output(self.blue_pin,GPIO.LOW)
+    def safe_output(self, pin, state):
+        try:
+            if  not self.is_plugged_in():
+                return 
+            
+            GPIO.output(pin, state)
+        except (RuntimeError, OSError) as e:
+            self.warn_message(f"Failed to set pin {pin} to {state}: {e}")
+
+    def is_plugged_in(self):
+        try:
+            self.safe_output(self.red_pin, GPIO.HIGH)
+            self.safe_output(self.green_pin, GPIO.HIGH)
+            self.safe_output(self.blue_pin, GPIO.HIGH)
+            return True
+        except (RuntimeError, OSError) as e:
+            return False
+
+
+    def turn_off(self):     
+        self.safe_output(self.red_pin, GPIO.HIGH)
+        self.safe_output(self.green_pin, GPIO.HIGH)
+        self.safe_output(self.blue_pin, GPIO.HIGH)
+
+    def white(self):
+        self.safe_output(self.red_pin, GPIO.LOW)
+        self.safe_output(self.green_pin, GPIO.LOW)
+        self.safe_output(self.blue_pin, GPIO.LOW)
+
+    def red(self):
+        self.safe_output(self.red_pin, GPIO.LOW)
+        self.safe_output(self.green_pin, GPIO.HIGH)
+        self.safe_output(self.blue_pin, GPIO.HIGH)
+
+    def green(self):
+        self.safe_output(self.red_pin, GPIO.HIGH)
+        self.safe_output(self.green_pin, GPIO.LOW)
+        self.safe_output(self.blue_pin, GPIO.HIGH)
+
+    def blue(self):
+        self.safe_output(self.red_pin, GPIO.HIGH)
+        self.safe_output(self.green_pin, GPIO.HIGH)
+        self.safe_output(self.blue_pin, GPIO.LOW)
+
+    def yellow(self):
+        self.safe_output(self.red_pin, GPIO.LOW)
+        self.safe_output(self.green_pin, GPIO.LOW)
+        self.safe_output(self.blue_pin, GPIO.HIGH)
+
+    def purple(self):
+        self.safe_output(self.red_pin, GPIO.LOW)
+        self.safe_output(self.green_pin, GPIO.HIGH)
+        self.safe_output(self.blue_pin, GPIO.LOW)
+
+    def lightBlue(self):
+        self.safe_output(self.red_pin, GPIO.HIGH)
+        self.safe_output(self.green_pin, GPIO.LOW)
+        self.safe_output(self.blue_pin, GPIO.LOW)

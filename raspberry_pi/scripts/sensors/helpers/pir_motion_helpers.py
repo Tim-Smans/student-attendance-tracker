@@ -15,3 +15,14 @@ class PirMotionDetector:
         return True
 
       return False
+
+  def is_plugged_in(self) -> bool:
+    try: 
+      if(GPIO.input(self.pir_pin)):
+          return True
+
+      return True 
+    except (RuntimeError, OSError) as e:
+      return False 
+
+

@@ -31,7 +31,18 @@ ultrasonic_ranger = UltrasonicRanger(trig_echo=26)
 print("Started scanning...")
 
 if lcd_screen.safe_write_byte_data(0x3e, 0x40, ord('c')) is False:
-    warn_message("!!! LCD is currently not connected or broken, continueing scanning...")
+    warn_message("!!! LCD is currently not connected or broken.")
+
+if ultrasonic_ranger.measure_distance() is None:
+    warn_message("!!! Ultrasonic Ranger is currently not connected or broken.")
+
+if not pir_motion_detector.is_plugged_in():
+    warn_message("!!! Pir Motion Detector is currently not connected or broken.")
+
+if not rgb_led.is_plugged_in():
+    warn_message("!!! RBG LED is currently not connected or broken.")
+
+
 
 # Main loop
 while True:
@@ -40,17 +51,18 @@ while True:
         time.sleep(10)
         continue
 
-    motion_detected = pir_motion_detector.detected_movement()
-    
-    if not motion_detected:
-        lcd_screen.set_text_norefresh("No motion detected.")
-        time.sleep(0.5)
-        continue
+    if not pir_motion_detector.is_plugged_in():
+        motion_detected = pir_motion_detector.detected_movement()
+        
+        if not motion_detected:
+            lcd_screen.set_text_norefresh("No motion detected.")
+            time.sleep(0.5)
+            continue
 
     phone_range = ultrasonic_ranger.measure_distance()
     print(f"Phone range: {phone_range} cm")
 
-    if(phone_range > 15):
+    if phone_range != None and phone_range > 15:
         print("Phone too far away. Waiting 5 seconds...")
         lcd_screen.set_text("Please hold your\nphone closer")
         time.sleep(5)
