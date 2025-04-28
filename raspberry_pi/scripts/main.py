@@ -36,9 +36,6 @@ if lcd_screen.safe_write_byte_data(0x3e, 0x40, ord('c')) is False:
 if ultrasonic_ranger.measure_distance() is None:
     warn_message("!!! Ultrasonic Ranger is currently not connected or broken.")
 
-if not pir_motion_detector.is_plugged_in():
-    warn_message("!!! Pir Motion Detector is currently not connected or broken.")
-
 
 
 # Main loop
@@ -48,13 +45,12 @@ while True:
         time.sleep(10)
         continue
 
-    if pir_motion_detector.is_plugged_in():
-        motion_detected = pir_motion_detector.detected_movement()
-        
-        if not motion_detected:
-            lcd_screen.set_text_norefresh("No motion detected.")
-            time.sleep(0.5)
-            continue
+    motion_detected = pir_motion_detector.detected_movement()
+    
+    if not motion_detected:
+        lcd_screen.set_text_norefresh("No motion detected.")
+        time.sleep(0.5)
+        continue
 
     print('passed pir check')
     phone_range = ultrasonic_ranger.measure_distance()
