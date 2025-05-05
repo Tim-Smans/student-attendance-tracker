@@ -14,6 +14,7 @@ from scripts.sensors.helpers.lcd_helpers import LCDScreen
 from scripts.sensors.helpers.led_helpers import RGBLED
 from scripts.sensors.helpers.pir_motion_helpers import PirMotionDetector
 from scripts.sensors.helpers.ranger_helpers import UltrasonicRanger
+from config import USE_SENSORS
 
 with open("./config.yaml", "r") as f:
     config = yaml.safe_load(f)
@@ -24,18 +25,21 @@ if student_id_length == None:
     student_id_length = 7
 
 # Defining peripherals, sensors and pin layout
-lcd_screen = LCDScreen()
-rgb_led = RGBLED(red_pin=23, green_pin=24, blue_pin=25)
-pir_motion_detector = PirMotionDetector(pir_pin=17)
-ultrasonic_ranger = UltrasonicRanger(trig_echo=26)
+if USE_SENSORS:
+    lcd_screen = LCDScreen()
+    rgb_led = RGBLED(red_pin=23, green_pin=24, blue_pin=25)
+    pir_motion_detector = PirMotionDetector(pir_pin=17)
+    ultrasonic_ranger = UltrasonicRanger(trig_echo=26)
+
+    if lcd_screen.safe_write_byte_data(0x3e, 0x40, ord('c')) is False:
+        warn_message("!!! LCD is currently not connected or broken.")
+
+    if ultrasonic_ranger.measure_distance() is None:
+        warn_message("!!! Ultrasonic Ranger is currently not connected or broken.")
 
 print("Started scanning...")
 
-if lcd_screen.safe_write_byte_data(0x3e, 0x40, ord('c')) is False:
-    warn_message("!!! LCD is currently not connected or broken.")
 
-if ultrasonic_ranger.measure_distance() is None:
-    warn_message("!!! Ultrasonic Ranger is currently not connected or broken.")
 
 
 
@@ -50,12 +54,13 @@ while True:
     lcd_screen.clear()
     rgb_led.white()
 
-    motion_detected = pir_motion_detector.detected_movement()
+    if USE_SENSORS:
+        motion_detected = pir_motion_detector.detected_movement()
     
-    if not motion_detected:
-        lcd_screen.set_text_norefresh("No motion\ndetected.")
-        time.sleep(0.5)
-        continue
+        if not motion_detected:
+            lcd_screen.set_text_norefresh("No motion\ndetected.")
+            time.sleep(0.5)
+            continue
 
     print('passed pir check')
     phone_range = ultrasonic_ranger.measure_distance()
