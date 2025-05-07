@@ -14,7 +14,7 @@ headers = {
 def update_status():
     for device_id in devices:
         try:
-            res = requests.get(f'{BASE_URL}/is_online/{device_id}', headers=headers)
+            res = requests.get(f'{BASE_URL}/status/is_online/{device_id}', headers=headers)
             status = res.json().get('online', False)
             device_up.labels(device_id=device_id).set(1 if status else 0)
         except Exception as e:
