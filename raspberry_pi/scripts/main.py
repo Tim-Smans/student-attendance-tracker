@@ -14,7 +14,9 @@ from scripts.sensors.helpers.lcd_helpers import LCDScreen
 from scripts.sensors.helpers.led_helpers import RGBLED
 from scripts.sensors.helpers.pir_motion_helpers import PirMotionDetector
 from scripts.sensors.helpers.ranger_helpers import UltrasonicRanger
-from config import USE_SENSORS
+
+
+USE_SENSORS = True
 
 with open("./config.yaml", "r") as f:
     config = yaml.safe_load(f)
