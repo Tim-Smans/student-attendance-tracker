@@ -3,3 +3,4 @@ uvicorn[standard]
 sqlalchemy
 python-dotenv
 pg8000
+prometheus_client

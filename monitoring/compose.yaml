@@ -12,3 +12,8 @@ services:
     image: grafana/grafana
     ports:
       - "3000:3000"
+
+  device_exporter:
+    build: ./device_exporter
+    env_file:
+      - ./device_exporter/.env
