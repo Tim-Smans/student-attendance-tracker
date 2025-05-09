@@ -1,4 +1,3 @@
-import { ClassGroup } from './../models/classGroup';
 import {instance} from '@/helpers/axiosHelpers';
 import type { Attendance } from '@/models/attendance';
 import type { ClassGroup } from '@/models/classGroup';
@@ -44,12 +43,42 @@ export const getSessionsCount = async (): Promise<number> => {
   }
 };
 
-export const getAllSessions = async (): Promise<number> => {
+export const getAllSessionsFromClassgroup = async (classgroupId: string) /*Promise<FullClassSession[]>*/ => {
   try {
-    const { data } = await instance.get('/classsessions/');
+    const { data } = await instance.get(`/classgroups/${classgroupId}/sessions`);
 
 
-    return data.items;
+    console.log(data)
+
+    const sessions: FullClassSession[] =
+      data.map((session: any) => {
+        console.log('group', session)
+        return {
+          classgroup: session.classgroup as ClassGroup,
+          roomDevice: {
+            id: session.room_device.id,
+            roomName: session.room_device.room_name,
+            deviceIdentifier: session.room_device.device_identifier
+          } as Device,
+          attendances: session.attendances.map((attendance: AttendanceResponse) => {
+            return {
+              id: attendance.id,
+              studentId: attendance.student_id,
+              timestamp: attendance.timestamp,
+              classSessionId: attendance.class_session_id
+            } as Attendance
+          }),
+          classgroupId: session.classgroup_id,
+          endTime: session.end_time,
+          startTime: session.start_time,
+          id: session.id,
+          roomDeviceId: session.room_device_id,
+        } as FullClassSession
+      })
+
+
+    console.log('ses', sessions)
+    return sessions;
   } catch (error) {
     console.error("API error:", error);
     throw error;

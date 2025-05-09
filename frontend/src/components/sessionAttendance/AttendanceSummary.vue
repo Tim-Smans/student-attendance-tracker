@@ -69,6 +69,7 @@
 <script>
 import { createWorkbook } from '@/helpers/excelHelpers'
 import SummaryCard from './SummaryCard.vue'
+import { getAllSessionsFromClassgroup } from '@/helpers/sessionHelpers'
 
 export default {
   components: {
@@ -103,8 +104,9 @@ export default {
     downloadSessionExcel() {
       createWorkbook([this.session])
     },
-    downloadClassgroupExcel() {
-      createWorkbook([this.session])
+    async downloadClassgroupExcel() {
+      const sessions = await getAllSessionsFromClassgroup(this.session.classgroupId)
+      await createWorkbook(sessions)
     }
   }
 }

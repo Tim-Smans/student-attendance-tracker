@@ -69,9 +69,11 @@ export const readExcelFile = async (file: File): Promise<ClassGroup> => {
 };
 
 
-export const createWorkbook = async (session: FullClassSession[]) =>{
+export const createWorkbook = async (sessions: FullClassSession[]) =>{
   const workbook = new ExcelJS.Workbook();
-  const workbookWithSheets = await createSessionSheet(workbook, session)
+  console.log('stink', sessions)
+
+  const workbookWithSheets = await createSessionSheet(workbook, sessions)
 
   if(workbookWithSheets == null){
     throw Error('No valid workbook created!')
