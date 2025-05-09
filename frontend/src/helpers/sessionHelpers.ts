@@ -1,3 +1,4 @@
+import { ClassGroup } from './../models/classGroup';
 import {instance} from '@/helpers/axiosHelpers';
 import type { Attendance } from '@/models/attendance';
 import type { ClassGroup } from '@/models/classGroup';
@@ -37,6 +38,18 @@ export const getSessionsCount = async (): Promise<number> => {
 
 
     return data.total;
+  } catch (error) {
+    console.error("API error:", error);
+    throw error;
+  }
+};
+
+export const getAllSessions = async (): Promise<number> => {
+  try {
+    const { data } = await instance.get('/classsessions/');
+
+
+    return data.items;
   } catch (error) {
     console.error("API error:", error);
     throw error;
@@ -94,4 +107,8 @@ export const getFullSession = async (id: string) => {
     console.error("API error:", error);
     throw error;
   }
+}
+
+export const getAllSessionsOfClassgroup = async (classGroupId: string) => {
+
 }

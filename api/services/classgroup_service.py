@@ -1,4 +1,7 @@
 import uuid
+
+from api.models.pydantic.class_session import FullClassSessionOut
+from api.models.sql_alchemy.class_session import ClassSession
 from ..models.pydantic.classgroup import ClassgroupOut
 from ..models.sql_alchemy.student import Student
 from ..exceptions.not_found_error import NotFoundError
@@ -42,6 +45,11 @@ def get_students_from_classgroup(classgroup_id: str, page: int, limit: int):
     students = [link.student for link in links]
 
     return [StudentSchema.model_validate(s) for s in students]
+
+def get_sessions_from_classgroup(classgroup_id: str):
+    sessions = session.query(ClassSession).filter_by(classgroup_id=classgroup_id).all()
+
+    return [FullClassSessionOut.model_validate(s) for s in sessions]
         
 
 def get_classgroups(page: int, limit: int):

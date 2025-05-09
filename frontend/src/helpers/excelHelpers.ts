@@ -1,6 +1,6 @@
 import type { ClassGroup } from '@/models/classGroup';
 import type { Student } from '@/models/student';
-import { read, utils } from "xlsx";
+import { read, utils, type WorkBook } from "xlsx";
 import * as ExcelJS from "exceljs"
 import { v4 as uuidv4 } from 'uuid';
 import type { FullClassSession } from '@/models/fullClassSession';
@@ -69,51 +69,73 @@ export const readExcelFile = async (file: File): Promise<ClassGroup> => {
 };
 
 
-export const createSessionSheet = async (session: FullClassSession) => {
-
-  console.log(session)
-
-  const students = await getStudentsFromClassgroup(session.classgroupId)
-
-  const attendedStudentIds = new Set(
-    session.attendances
-      .filter(x => x.classSessionId === session.id)
-      .map(x => x.studentId)
-  );
-
-
+export const createWorkbook = async (session: FullClassSession[]) =>{
   const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet('Attendance');
-  worksheet.addRow([`Session from: ${session.startTime} to ${session.endTime}`])
-  worksheet.addRow([`Classgroup: ${session.classgroup.name}`])
-  worksheet.addRow([''])
+  const workbookWithSheets = await createSessionSheet(workbook, session)
 
-  // Voeg headers toe
-  worksheet.addRow(['Student number', 'Last name', 'First name', 'Email', 'Degree programme', 'Attendance']);
+  if(workbookWithSheets == null){
+    throw Error('No valid workbook created!')
+  }
 
-  // Voeg studenten toe
-  students.forEach(x => {
-    const row = worksheet.addRow([
-      x.studentNumber,
-      x.lastName,
-      x.firstName,
-      x.email,
-      x.degreeProgramme,
-      attendedStudentIds.has(x.studentNumber) ? 'Attended' : 'Absent'
-    ]);
+  await createDocument(workbookWithSheets)
+}
 
-    if (attendedStudentIds.has(x.studentNumber)) {
-      row.eachCell(cell => {
-        cell.fill = {
-          type: 'pattern',
-          pattern: 'solid',
-          fgColor: { argb: 'FFCCFFCC' } // Licht green
-        };
-      });
-    }
+const createSessionSheet = async (workbook: ExcelJS.Workbook, sessions: FullClassSession[]): Promise<ExcelJS.Workbook | null> => {
+  if(sessions.length == 0) {
+    return null
+  }
+
+  console.log(sessions)
+
+  const students = await getStudentsFromClassgroup(sessions[0].classgroupId)
+
+  sessions.forEach(session => {
+
+    const attendedStudentIds = new Set(
+      session.attendances
+        .filter(x => x.classSessionId === session.id)
+        .map(x => x.studentId)
+    );
+
+    const sheetName = session.id
+    const worksheet = workbook.addWorksheet(sheetName);
+    worksheet.addRow([`Session from: ${session.startTime} to ${session.endTime}`])
+    worksheet.addRow([`Classgroup: ${session.classgroup.name}`])
+    worksheet.addRow([''])
+
+    // Voeg headers toe
+    worksheet.addRow(['Student number', 'Last name', 'First name', 'Email', 'Degree programme', 'Attendance']);
+
+    // Voeg studenten toe
+    students.forEach(x => {
+      const row = worksheet.addRow([
+        x.studentNumber,
+        x.lastName,
+        x.firstName,
+        x.email,
+        x.degreeProgramme,
+        attendedStudentIds.has(x.studentNumber) ? 'Attended' : 'Absent'
+      ]);
+
+      if (attendedStudentIds.has(x.studentNumber)) {
+        row.eachCell(cell => {
+          cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFCCFFCC' } // Licht green
+          };
+        });
+      }
+    });
   });
 
+
   // Write the file to download in browser
+  return workbook
+}
+
+
+const createDocument = async (workbook: ExcelJS.Workbook) => {
   const buffer = await workbook.xlsx.writeBuffer();
   const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 

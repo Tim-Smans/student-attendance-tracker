@@ -46,6 +46,7 @@ export const getAllClassgroups = async (): Promise<ClassGroup[]> => {
   }
 };
 
+
 export const getClassgroupCount = async (): Promise<number> => {
   try {
     const { data } = await instance.get('/classgroups/');

@@ -35,6 +35,19 @@ async def read_students_from_classgroup(
         logger.error(f"Unexpected error in read_students_from_classgroup: {e}")   
         raise HTTPException(status_code=500, detail=f"{str(e)}")
 
+
+@router.get("/{classgroup_id}/sessions", dependencies=[Depends(verify_api_key)])
+async def read_sessions_from_classgroup(classgroup_id: str):
+    try:
+        students = get_students_from_classgroup(classgroup_id)
+
+        return students
+    
+    except Exception as e:
+        logger.error(f"Unexpected error in read_sessions_from_classgroup: {e}")   
+        raise HTTPException(status_code=500, detail=f"{str(e)}")
+
+
 @router.get("/{classgroup_id}", dependencies=[Depends(verify_api_key)])
 async def read_classgroup_by_id(
     classgroup_id: str,
