@@ -26,6 +26,12 @@
           >
             Scheduler
           </router-link>
+
+          <div v-if="auth.user" class="flex items-center space-x-4">
+            <img :src="auth.user.picture" class="w-6 h-6 rounded-full" />
+            <span>{{ auth.user.given_name }}</span>
+            <button @click="logout" class="text-sm text-red-500 hover:underline">Logout</button>
+          </div>
         </div>
       </div>
     </div>
@@ -33,5 +39,14 @@
 </template>
 
 <script setup>
-// No logic needed for now
+import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
+
+const auth = useAuthStore()
+const router = useRouter()
+
+const logout = () => {
+  auth.logout()
+  router.push('/login')
+}
 </script>
