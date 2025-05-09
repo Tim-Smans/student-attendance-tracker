@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import JSONResponse
 from ..exceptions.not_found_error import NotFoundError
-from ..services.classgroup_service import add_student_to_classgroup, create_classgroup, delete_classgroup, get_classgroup, get_classgroups, get_students_from_classgroup, remove_student_from_classgroup
+from ..services.classgroup_service import add_student_to_classgroup, create_classgroup, delete_classgroup, get_classgroup, get_classgroups, get_sessions_from_classgroup, get_students_from_classgroup, remove_student_from_classgroup
 from ..schemas.classgroup import AddStudentToClassGroupSchema, ClassGroupSchema
 from ..services.auth_service import verify_api_key
 
@@ -39,9 +39,9 @@ async def read_students_from_classgroup(
 @router.get("/{classgroup_id}/sessions", dependencies=[Depends(verify_api_key)])
 async def read_sessions_from_classgroup(classgroup_id: str):
     try:
-        students = get_students_from_classgroup(classgroup_id)
+        sessions = get_sessions_from_classgroup(classgroup_id)
 
-        return students
+        return sessions
     
     except Exception as e:
         logger.error(f"Unexpected error in read_sessions_from_classgroup: {e}")   

@@ -1,7 +1,7 @@
 import uuid
 
-from api.models.pydantic.class_session import FullClassSessionOut
-from api.models.sql_alchemy.class_session import ClassSession
+from ..models.pydantic.class_session import FullClassSessionOut
+from ..models.sql_alchemy.class_session import ClassSession
 from ..models.pydantic.classgroup import ClassgroupOut
 from ..models.sql_alchemy.student import Student
 from ..exceptions.not_found_error import NotFoundError
