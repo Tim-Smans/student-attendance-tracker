@@ -41,6 +41,7 @@ sudo sed -i '$ai2c_arm=on' /boot/config.txt
 
 # Going to project repository directory
 cd /home/metro/student-attendance-tracker/raspberry_pi
+git pull
 
 python3 -m venv .venv --system-site-packages
 source .venv/bin/activate
@@ -57,7 +58,7 @@ tee .env > /dev/null <<EOF
 API_KEY=$API_KEY
 EOF
 
-chmod +x /home/timsm/student-attendance-tracker/raspberry_pi/scripts/startup.sh
+chmod +x /home/metro/student-attendance-tracker/raspberry_pi/scripts/startup.sh
 
 # Create the systemd service
 USER_HOME="/home/$(whoami)"
