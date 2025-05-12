@@ -25,13 +25,26 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 //
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
-// }
+
+Cypress.Commands.add('loginAsFakeUser', () => {
+  cy.window().then((win) => {
+    win.localStorage.setItem('pinia-auth', JSON.stringify({
+      user: {
+        email: "timsm@metropolia.fi",
+        name: "Tim Smans",
+        picture: "https://fake.img",
+        hd: "metropolia.fi"
+      }
+    }))
+  })
+})
+
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      loginAsFakeUser(): Chainable<void>
+    }
+  }
+}
+
+export {}
