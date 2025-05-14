@@ -32,6 +32,19 @@ resource "kubernetes_deployment" "fastapi" {
   }
 }
 
+
+resource "kubernetes_secret" "postgres" {
+  metadata {
+    name = "postgres-secret"
+  }
+
+  data = {
+    POSTGRES_PASSWORD = base64encode(var.postgres_password)
+  }
+
+  type = "Opaque"
+}
+
 resource "kubernetes_deployment" "postgres" {
   metadata {
     name = "postgres-db"
@@ -61,7 +74,12 @@ resource "kubernetes_deployment" "postgres" {
           image = "postgres:14"
           env {
             name  = "POSTGRES_PASSWORD"
-            value = "supersecret" # gebruik secrets in prod
+            value_from {
+                secret_key_ref {
+                  name = kubernetes_secret.postgres.metadata[0].name
+                  key  = "POSTGRES_PASSWORD"
+                }
+            }     
           }
           ports {
             container_port = 5432
