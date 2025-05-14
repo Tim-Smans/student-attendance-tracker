@@ -1,6 +1,6 @@
 project_id = "prj-mtp-aiot-aisk-sat"
 region     = "europe-north1"
-postgres_password = "supersecret"
+postgres_password = "x5Oqyi458KnpLtwc02e8cNPjRlc"
 api_key="4ee1fc3d3a9aa6d1ffec21c094c93fa9"
-database_url="postgresql+pg8000://postgres:postgresPassword@localhost:5432/postgres"
+database_url="postgresql+pg8000://postgres:x5Oqyi458KnpLtwc02e8cNPjRlc@postgres-db:5432/postgres"
 google_client_id="608506568074-d6umoularj170oj7cgu8tk5ibdsboiib.apps.googleusercontent.com"

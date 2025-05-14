@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI(
   title="Student Attendance Tracker API", 
   version="B-0.3",
+  root_path="/api"
 )
 
 

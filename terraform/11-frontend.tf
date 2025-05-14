@@ -23,3 +23,25 @@ resource "kubernetes_deployment" "frontend" {
     }
   }
 }
+
+
+
+resource "kubernetes_service" "frontend" {
+  metadata {
+    name = "vue-frontend"
+    labels = { app = "frontend" }
+  }
+  spec {
+    type = "ClusterIP"
+
+    selector = {
+      app = "frontend"
+    }
+
+    port {
+      protocol = "TCP"
+      port     = 80
+      target_port = 80
+    }
+  }
+}
