@@ -16,16 +16,16 @@ import { createPinia } from 'pinia';
 
 const routes = [
   { path: '/login', name: 'Login', component: Login },
-  { path: '/', component: HomePage, meta: { requiresAuth: true } },
-  { path: '/classgroup', component: ClassgroupOverview, meta: { requiresAuth: true } },
-  { path: '/classgroup/new', component: NewClassgroup, meta: { requiresAuth: true } },
-  { path: '/schedule', component: ClassroomScheduler, meta: { requiresAuth: true } },
+  { path: '/', component: HomePage, meta: { requiresAuth: false } },
+  { path: '/classgroup', component: ClassgroupOverview, meta: { requiresAuth: false } },
+  { path: '/classgroup/new', component: NewClassgroup, meta: { requiresAuth: false } },
+  { path: '/schedule', component: ClassroomScheduler, meta: { requiresAuth: false } },
   {
     path: '/attendance/:sessionId',
     name: 'attendance',
     component: SessionAttendanceTracker,
     props: true,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: false }
   }
 ]
 
@@ -34,7 +34,7 @@ const router = createRouter({
   routes,
 })
 
-
+/*
 router.beforeEach((to, from, next) => {
   const auth = useAuthStore()
   if (to.meta.requiresAuth && !auth.isAuthenticated()) {
@@ -43,7 +43,7 @@ router.beforeEach((to, from, next) => {
     next()
   }
 })
-
+*/
 const pinia = createPinia()
 
 createApp(App)
