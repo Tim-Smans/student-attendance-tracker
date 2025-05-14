@@ -2,7 +2,7 @@ import sys
 import requests
 
 
-BASE_URL = "https://student-attendance-tracker-ungw.onrender.com/"
+BASE_URL = "http://34.88.154.35/api/"
 
 if len(sys.argv) < 3:
     print("Usage: python setup.py <room_name> <device_identifier> <api_key>")
