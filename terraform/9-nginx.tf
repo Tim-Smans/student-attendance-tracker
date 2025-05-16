@@ -15,17 +15,25 @@ EOF
   ]
 }
 
-
-
 resource "kubernetes_ingress_v1" "fastapi_ingress" {
   metadata {
     name = "fastapi-ingress"
+    annotations = {
+      "cert-manager.io/cluster-issuer"             = "letsencrypt-prod"
+    }
   }
 
   spec {
     ingress_class_name = "nginx"
 
+    tls {
+      hosts       = ["tracker.timsmans.be"]
+      secret_name = "frontend-tls" # Zelfde TLS cert
+    }
+
     rule {
+      host = "tracker.timsmans.be"
+      
       http {
         path {
           path      = "/api"
@@ -51,16 +59,26 @@ resource "kubernetes_ingress_v1" "frontend_ingress" {
     name      = "frontend-ingress"
     namespace = "default"
     annotations = {
+      # Belangrijke aanpassing: gebruik rewrite-target om alle paden naar de root te sturen
       "nginx.ingress.kubernetes.io/rewrite-target" = "/"
+      "cert-manager.io/cluster-issuer"             = "letsencrypt-prod"
     }
   }
 
   spec {
     ingress_class_name = "nginx"
+
+    
+    tls {
+      hosts       = ["tracker.timsmans.be"] # Domain
+      secret_name = "frontend-tls"
+    }
+    
     rule {
+      host = "tracker.timsmans.be"
       http {
         path {
-          path     = "/"
+          path      = "/"  
           path_type = "Prefix"
           backend {
             service {

@@ -16,7 +16,8 @@ resource "kubernetes_deployment" "frontend" {
       spec {
         container {
           name  = "frontend"
-          image = "docker.io/timsmans/student-tracking-frontend:latest"
+          image = "docker.io/timsmans/student-tracking-frontend:v4-api-url"
+          image_pull_policy = "Always"
           port { container_port = 80 }
         }
       }

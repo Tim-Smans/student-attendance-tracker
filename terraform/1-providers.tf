@@ -9,6 +9,7 @@ terraform {
     bucket = "timsmans-tf-state-staging"
     prefix = "terraform/state"
   }
+  
 }
 
 
