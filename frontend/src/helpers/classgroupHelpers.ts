@@ -86,7 +86,7 @@ export const getStudentsFromClassgroup = async (classGroupId: string): Promise<S
   try {
     let students: Student[] = []
 
-    const { data } = await instance.get(`/classgroups/${classGroupId}/students/`)
+    const { data } = await instance.get(`/classgroups/${classGroupId}/students`)
 
 
     const pageStudents: Student[] = data.map((student: StudentResponse) => ({
