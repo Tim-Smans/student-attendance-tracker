@@ -33,7 +33,7 @@ export const getSessionsOfRoomDevice = async (device_id: string) => {
 
 export const getSessionsCount = async (): Promise<number> => {
   try {
-    const { data } = await instance.get('/classsessions');
+    const { data } = await instance.get('/classsessions/');
 
 
     return data.total;
@@ -91,7 +91,7 @@ export const getAllSessionsFromClassgroup = async (classgroupId: string) /*Promi
 export const createSession = async (session: SessionRequest) => {
   try {
     console.log(session)
-    await instance.post('/classsessions', session);
+    await instance.post('/classsessions/', session);
   } catch (error) {
     console.error("API error:", error);
     throw error;
