@@ -1,7 +1,6 @@
 import type { ClassGroup } from '@/models/classGroup';
-import axios, { type AxiosResponse } from 'axios';
 import { createStudentsFromList } from './studentHelpers';
-import { instance } from './axiosHelpers';
+import {instance} from '@/helpers/axiosHelpers';
 import type { ClassGroupResponse } from '@/models/responses/classGroupResponse';
 import type { Student } from '@/models/student';
 import type { StudentResponse } from '@/models/responses/studentResponse';
@@ -17,7 +16,7 @@ export const createClassgroup = async (classGroup: ClassGroup) => {
 
   console.log(newClassGroup)
 
-  const response = await instance.post('/classgroups/', newClassGroup)
+  const response = await instance.post('/classgroups', newClassGroup)
 
 
   if(response.status === 201) {
@@ -30,7 +29,7 @@ export const createClassgroup = async (classGroup: ClassGroup) => {
 
 export const getAllClassgroups = async (): Promise<ClassGroup[]> => {
   try {
-    const { data } = await instance.get('/classgroups/');
+    const { data } = await instance.get('/classgroups');
 
     const classgroups: ClassGroup[] = data.items.map((classgroup: ClassGroupResponse) => {
       return {
@@ -49,7 +48,7 @@ export const getAllClassgroups = async (): Promise<ClassGroup[]> => {
 
 export const getClassgroupCount = async (): Promise<number> => {
   try {
-    const { data } = await instance.get('/classgroups/');
+    const { data } = await instance.get('/classgroups');
 
 
     return data.total;
@@ -87,7 +86,7 @@ export const getStudentsFromClassgroup = async (classGroupId: string): Promise<S
   try {
     let students: Student[] = []
 
-    const { data } = await instance.get(`/classgroups/${classGroupId}/students/`)
+    const { data } = await instance.get(`/classgroups/${classGroupId}/students`)
 
 
     const pageStudents: Student[] = data.map((student: StudentResponse) => ({

@@ -6,6 +6,6 @@ load_dotenv()
 API_KEY = os.getenv("API_KEY")
 print("Loaded api key: " + API_KEY)
 
-BASE_URL = "http://34.88.154.35/api"
+BASE_URL = "https://tracker.timsmans.be/api"
 
 USE_SENSORS = True

@@ -33,7 +33,7 @@ export const createStudent = async (student: Student) => {
 
   console.log(newStudent)
 
-  const response = await instance.post('/students/', newStudent);
+  const response = await instance.post('/students', newStudent);
 
   if(response.status === 201) {
     return true
@@ -49,7 +49,7 @@ export const createStudent = async (student: Student) => {
  */
 export const getTotalStudentCount = async () => {
   try {
-    const { data } = await instance.get('/students/');
+    const { data } = await instance.get('/students');
     return data.total;
   } catch (error) {
     console.error("API error:", error);
