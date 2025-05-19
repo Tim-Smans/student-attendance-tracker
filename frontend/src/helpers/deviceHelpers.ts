@@ -14,6 +14,7 @@ export const getDevices = async () => {
       };
     })
 
+    console.log(devices)
     return devices;
   } catch (error) {
     console.error("API error:", error);

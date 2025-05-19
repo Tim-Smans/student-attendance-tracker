@@ -13,6 +13,7 @@ import vue3GoogleLogin from 'vue3-google-login'
 import { useAuthStore } from './stores/auth';
 import Login from './components/Login.vue';
 import { createPinia } from 'pinia';
+import DownloadOSImage from './components/DownloadOSImage.vue';
 
 const routes = [
   { path: '/login', name: 'Login', component: Login },
@@ -20,6 +21,7 @@ const routes = [
   { path: '/classgroup', component: ClassgroupOverview, meta: { requiresAuth: false } },
   { path: '/classgroup/new', component: NewClassgroup, meta: { requiresAuth: false } },
   { path: '/schedule', component: ClassroomScheduler, meta: { requiresAuth: false } },
+  { path: '/new-device', component: DownloadOSImage, meta: { requiresAuth: false } },
   {
     path: '/attendance/:sessionId',
     name: 'attendance',
@@ -44,6 +46,7 @@ router.beforeEach((to, from, next) => {
   }
 })
 */
+
 const pinia = createPinia()
 
 createApp(App)

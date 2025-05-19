@@ -26,6 +26,12 @@
           >
             Scheduler
           </router-link>
+          <router-link
+            to="/new-device"
+            class="text-gray-700 hover:text-orange-600 text-sm font-medium"
+          >
+            Set up new classroom
+          </router-link>
 
           <div v-if="auth.user" class="flex items-center space-x-4">
             <img :src="auth.user.picture" class="w-6 h-6 rounded-full" />
