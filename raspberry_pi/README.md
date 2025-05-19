@@ -20,7 +20,7 @@ This guide helps you set up a brand-new device for use in the smart monitoring s
 ## 📦 Step 1: Flash the Custom OS Image
 
 1. Visit the dashboard:  
-   `https://tracker.timsmans.be/new_room`
+   [Dashboard: New device](https://tracker.timsmans.be/new-device)
 
 2. Click on the **“Download image”** button.
 
