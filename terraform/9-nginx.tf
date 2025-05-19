@@ -1,3 +1,8 @@
+/*
+  Installs the official NGINX ingress controller via Helm
+  The controller gets a LoadBalancer type service, makes sure that GKE creates an external IP en make it publically accessable.
+*/
+
 resource "helm_release" "nginx_ingress" {
   name       = "nginx-ingress"
   repository = "https://kubernetes.github.io/ingress-nginx"
@@ -15,6 +20,9 @@ EOF
   ]
 }
 
+/*
+  Annotations.Certmanager.io/cluster-issuer = Make sure that cert-manager automatically gets a TLS-cert via Let's encrypt.
+*/
 resource "kubernetes_ingress_v1" "fastapi_ingress" {
   metadata {
     name = "fastapi-ingress"
