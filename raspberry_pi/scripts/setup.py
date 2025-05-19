@@ -2,7 +2,7 @@ import sys
 import requests
 
 
-BASE_URL = "http://34.88.154.35/api/"
+BASE_URL = "https://tracker.timsmans.be/api/"
 
 if len(sys.argv) < 3:
     print("Usage: python setup.py <room_name> <device_identifier> <api_key>")
@@ -21,7 +21,7 @@ headers = {
 payload = {
   "room_name": room_name, "device_identifier": device_identifier
 }
-res = requests.post(BASE_URL + "roomdevices", json=payload, headers=headers)
+res = requests.post(BASE_URL + "roomdevices/", json=payload, headers=headers)
 
 if res.status_code != 201:
   print(res.text)

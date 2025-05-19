@@ -6,7 +6,7 @@ def add_attendance(student_id, session_id):
         print("Student is not in session")
         return
 
-    return post("attendances", {
+    return post("attendances/", {
         "student_id": student_id,
         "class_session_id": session_id
     })
