@@ -122,13 +122,17 @@ while True:
             # Turn the LED green if the student is in the session
             rgb_led.green()
 
+
     else:
         # Turn the LED red if the student id is not found in the image.
         rgb_led.red()
         print("No Student ID found.")
         lcd_screen.set_text(f"Scanning failed\nTry again!")
 
+
     # Wait before scanning again
     time.sleep(3)
+    lcd_screen.clear()
+
 
 
