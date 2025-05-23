@@ -1,7 +1,7 @@
 
 # Student Attendance Tracker
 
-![Architecture diagram](https://i.imgur.com/m9aJre2.png)
+![Architecture diagram](https://i.imgur.com/kF55tTB.png)
 
 This is the usage guide for my Student Attendance Tracker
 
