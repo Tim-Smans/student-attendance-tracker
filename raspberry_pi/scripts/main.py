@@ -17,7 +17,6 @@ from scripts.sensors.helpers.ranger_helpers import UltrasonicRanger
 
 
 USE_SENSORS = True
-motion_detected_msg_set = False
 
 with open("./config.yaml", "r") as f:
     config = yaml.safe_load(f)
@@ -43,9 +42,6 @@ if USE_SENSORS:
 print("Started scanning...")
 
 
-
-
-
 # Main loop
 while True:
     if not is_active_session():
@@ -54,21 +50,16 @@ while True:
         time.sleep(10)
         continue
     
-    lcd_screen.clear()
     rgb_led.white()
 
     if USE_SENSORS:
         motion_detected = pir_motion_detector.detected_movement()
         if not motion_detected:
-            if(motion_detected_msg_set == False):
-                motion_detected_msg_set = True
-                lcd_screen.set_text_norefresh("No motion\ndetected.")
-        
+            lcd_screen.set_text_norefresh("No motion\ndetected.")
             time.sleep(0.5)
             continue
 
     print('passed pir check')
-    motion_detected_msg_set = False
     phone_range = ultrasonic_ranger.measure_distance()
     print(f"Phone range: {phone_range} cm")
 
